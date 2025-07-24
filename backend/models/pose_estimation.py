@@ -46,11 +46,15 @@ class PoseEstimator:
                 'left_wrist': (landmarks[15].x, landmarks[15].y),
                 'right_wrist': (landmarks[16].x, landmarks[16].y),
                 'nose': (landmarks[0].x, landmarks[0].y),
+                'left_eye': (landmarks[2].x, landmarks[2].y),
+                'right_eye': (landmarks[5].x, landmarks[5].y),
                 'visibility': {
                     'left_shoulder': landmarks[11].visibility,
                     'right_shoulder': landmarks[12].visibility,
                     'left_hip': landmarks[23].visibility,
-                    'right_hip': landmarks[24].visibility
+                    'right_hip': landmarks[24].visibility,
+                    'left_elbow': landmarks[13].visibility,
+                    'right_elbow': landmarks[14].visibility
                 }
             }
             
