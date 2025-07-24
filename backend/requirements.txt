@@ -1,0 +1,10 @@
+flask
+flask-cors
+opencv-python
+numpy
+pillow
+tensorflow
+tensorflow-hub
+mediapipe
+groq
+python-dotenv
