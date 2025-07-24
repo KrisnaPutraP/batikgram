@@ -6,6 +6,10 @@ import io
 from PIL import Image
 import json
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from models.pose_estimation import PoseEstimator
 from models.virtual_fitting import VirtualFitting
@@ -22,6 +26,24 @@ pose_estimator = PoseEstimator()
 virtual_fitting = VirtualFitting()
 chatbot = BatikChatbot()
 
+# Conditional import for IDM-VTON
+try:
+    from models.idm_vton import get_idm_vton_model
+    IDM_VTON_AVAILABLE = True
+    logger.info("✅ IDM-VTON wrapper available")
+except ImportError as e:
+    print(f"IDM-VTON not available: {e}")
+    IDM_VTON_AVAILABLE = False
+    
+    class DummyIDMVTON:
+        def create_garment_from_pattern(self, *args, **kwargs):
+            raise Exception("IDM-VTON not available")
+        def apply_garment(self, *args, **kwargs):
+            raise Exception("IDM-VTON not available")
+    
+    def get_idm_vton_model():
+        return DummyIDMVTON()
+    
 # Create necessary directories
 os.makedirs('data/batik_patterns', exist_ok=True)
 os.makedirs('saved_photos', exist_ok=True)
@@ -60,7 +82,7 @@ def get_batik_patterns():
 
 @app.route('/virtual_fitting', methods=['POST'])
 def apply_virtual_fitting():
-    """Apply batik pattern to user image using pose estimation"""
+    """Apply batik pattern to user image using IDM-VTON only"""
     try:
         data = request.json
         user_image_base64 = data.get('user_image')
@@ -69,30 +91,25 @@ def apply_virtual_fitting():
         if not user_image_base64 or not pattern_id:
             return jsonify({"error": "Missing user_image or pattern_id"}), 400
         
+        # Check if IDM-VTON is available
+        if not IDM_VTON_AVAILABLE:
+            return jsonify({"error": "IDM-VTON not available. Please install: pip install diffusers transformers accelerate"}), 500
+        
         # Decode user image with proper validation
         try:
-            # Remove data URL prefix if present
             if ',' in user_image_base64:
                 user_image_base64 = user_image_base64.split(',')[1]
             
             user_image = decode_base64_image(user_image_base64)
             
-            # Ensure image is RGB
             if user_image.mode != 'RGB':
                 user_image = user_image.convert('RGB')
-            
-            # Convert PIL to OpenCV format with proper validation
-            user_np = np.array(user_image)
-            if user_np.size == 0:
-                raise ValueError("Empty image array")
-            
-            user_cv = cv2.cvtColor(user_np, cv2.COLOR_RGB2BGR)
-            
+                
         except Exception as img_error:
             print(f"Image processing error: {img_error}")
             return jsonify({"error": f"Invalid image data: {str(img_error)}"}), 400
         
-        # Load batik pattern - try multiple extensions
+        # Load batik pattern
         pattern_path = None
         for ext in ['.jpg', '.jpeg', '.png']:
             test_path = f'data/batik_patterns/{pattern_id}{ext}'
@@ -101,18 +118,50 @@ def apply_virtual_fitting():
                 break
         
         if not pattern_path:
-            # If pattern not found, create a procedural pattern
             pattern_path = create_procedural_pattern(pattern_id)
         
-        # Apply intelligent batik overlay with body detection
-        result_image = apply_intelligent_batik_overlay(user_cv, pattern_path, pattern_id)
+        try:
+            # Use IDM-VTON only - no fallback
+            pattern_image = Image.open(pattern_path)
+            idm_vton = get_idm_vton_model()
+            
+            # Create garment template from batik pattern
+            garment_template = idm_vton.create_garment_from_pattern(pattern_image)
+            
+            # Apply virtual try-on using IDM-VTON API only
+            result_image = idm_vton.apply_garment(user_image, garment_template)
+            method_used = "IDM-VTON API"
+            
+        except Exception as vton_error:
+            error_message = str(vton_error)
+            print(f"IDM-VTON failed: {error_message}")
+            
+            # Check if it's an SSL error
+            if "SSL" in error_message or "EOF occurred in violation of protocol" in error_message:
+                return jsonify({
+                    "error": "IDM-VTON API connection failed due to network/SSL issues. Please try again later or check your internet connection.",
+                    "details": error_message,
+                    "suggestion": "The Hugging Face API may be temporarily unavailable. Please retry in a few minutes."
+                }), 503
+            elif "not available" in error_message or "no token" in error_message:
+                return jsonify({
+                    "error": "IDM-VTON API not properly configured.",
+                    "details": error_message,
+                    "suggestion": "Please ensure HUGGING_FACE_TOKEN is set correctly in your .env file."
+                }), 500
+            else:
+                return jsonify({
+                    "error": "IDM-VTON processing failed.",
+                    "details": error_message,
+                    "suggestion": "Please try again with a different image or pattern."
+                }), 500
         
-        # Convert back to PIL and then to base64
-        result_pil = Image.fromarray(cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB))
-        result_base64 = encode_image_base64(result_pil)
+        # Convert to base64
+        result_base64 = encode_image_base64(result_image)
         
         return jsonify({
             "result_image": result_base64,
+            "method_used": method_used,
             "pose_detected": True
         }), 200
         

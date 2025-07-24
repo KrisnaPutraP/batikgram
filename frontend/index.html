@@ -231,7 +231,7 @@
                 <div class="controls">
                     <button id="start-camera">Start Camera</button>
                     <button id="capture-photo" disabled>Capture Photo</button>
-                    <button id="apply-batik" disabled>Apply Batik</button>
+                    <button id="apply-batik" disabled>Apply Batik (IDM-VTON)</button>
                     <button id="save-photo" disabled>Save Photo</button>
                 </div>
                 <div id="status-message"></div>
@@ -273,6 +273,70 @@
         let capturedImage = null;
         let resultImage = null;
         
+        // Complete batik patterns data (60 motifs)
+        const batikPatterns = [
+            { id: 'sekar_kemuning', name: 'Sekar Kemuning', description: 'Motif bunga kemuning yang melambangkan keseimbangan antara cipta, rasa, dan karsa' },
+            { id: 'ceplok_liring', name: 'Ceplok Liring', description: 'Penempatan ragam hias secara tidak beraturan dalam satu bidang' },
+            { id: 'sekar_duren', name: 'Sekar Duren', description: 'Motif bunga durian yang melambangkan sikap kritis' },
+            { id: 'sekar_gayam', name: 'Sekar Gayam', description: 'Motif dari pohon gayam yang memberikan keteduhan' },
+            { id: 'sekar_pacar', name: 'Sekar Pacar', description: 'Bunga pacar yang digunakan dalam upacara Hindu' },
+            { id: 'arumdalu', name: 'Arumdalu', description: 'Bunga yang mekar di malam hari dan menyebarkan keharuman' },
+            { id: 'sekar_srigading', name: 'Sekar Srigading', description: 'Bunga sri gading yang menjadi simbol kerukunan' },
+            { id: 'kemukus', name: 'Kemukus', description: 'Lintang kemukus - bintang berekor yang terlihat di malam hari' },
+            { id: 'sekar_gudhe', name: 'Sekar Gudhe', description: 'Bunga tanaman gudhe dari keluarga kacang-kacangan' },
+            { id: 'sekar_ketongkeng', name: 'Sekar Ketongkeng', description: 'Sejenis anggrek yang bunganya menyerupai kalajengking' },
+            { id: 'brendi', name: 'Brendi', description: 'Motif terinspirasi dari simbol minuman brendi dengan 3 koin berjajar' },
+            { id: 'cakar_ayam', name: 'Cakar Ayam', description: 'Simbol semangat menyongsong hari esok untuk mencari rejeki' },
+            { id: 'sekar_menur', name: 'Sekar Menur', description: 'Bunga menur berwarna putih bersih yang saling menumpuk' },
+            { id: 'sekar_tebu', name: 'Sekar Tebu', description: 'Bunga tebu yang dalam bahasa Jawa disebut gleges' },
+            { id: 'sekar_manggis', name: 'Sekar Manggis', description: 'Bentuk bunga manggis, ratunya buah' },
+            { id: 'sekar_randu', name: 'Sekar Randu', description: 'Tanaman randu yang menghasilkan kapuk' },
+            { id: 'worawari_rumpuk', name: 'Worawari Rumpuk', description: 'Bunga sepatu yang bertumpuk (ganda/berlipat)' },
+            { id: 'sekar_duku', name: 'Sekar Duku', description: 'Bentuk bunga duku dilihat dari atas' },
+            { id: 'sekar_jagung', name: 'Sekar Jagung', description: 'Bunga jagung yang dalam bahasa Jawa disebut sinuwun' },
+            { id: 'jayakirana', name: 'Jayakirana', description: 'Senapati Raja Angling Dharma dari kerajaan Malwapati' },
+            { id: 'mawur', name: 'Mawur', description: 'Sesuatu yang tersebar berserakan atau tidak menjadi satu' },
+            { id: 'sekar_tanjung', name: 'Sekar Tanjung', description: 'Tanaman peneduh yang menghasilkan bunga berbau harum' },
+            { id: 'sekar_keben', name: 'Sekar Keben', description: 'Pohon yang dapat tumbuh baik di daerah pantai' },
+            { id: 'sekar_srengenge', name: 'Sekar Srengenge', description: 'Bunga matahari yang selalu menghadap ke arah matahari' },
+            { id: 'sekar_soka', name: 'Sekar Soka', description: 'Tanaman dengan bunga majemuk serumpun berbagai warna' },
+            { id: 'sekar_nangka', name: 'Sekar Nangka', description: 'Bunga nangka atau angkup dalam bahasa Jawa' },
+            { id: 'kawung_nitik', name: 'Kawung Nitik', description: 'Empat lingkaran yang saling bersinggungan dengan mlinjon di tengahnya' },
+            { id: 'sekar_kentang', name: 'Sekar Kentang', description: 'Bentuk bunga kentang sebagai ide motif' },
+            { id: 'sekar_pudak', name: 'Sekar Pudak', description: 'Tanaman pandan berduri dengan bunga putih beraroma harum' },
+            { id: 'sekar_dlima', name: 'Sekar Dlima', description: 'Bentuk bunga delima' },
+            { id: 'karawitan', name: 'Karawitan', description: 'Bunga karawitan dan orkestra musik Jawa' },
+            { id: 'cinde_wilis', name: 'Cinde Wilis', description: 'Kain sutra hijau bergambar bunga' },
+            { id: 'sekar_mlati', name: 'Sekar Mlati', description: 'Bunga melati simbol kesucian' },
+            { id: 'kuncup_kanthil', name: 'Kuncup Kanthil', description: 'Bunga kanthil putih yang harum' },
+            { id: 'sekar_dangan', name: 'Sekar Dangan', description: 'Dangan berarti sembuh dalam bahasa Jawa halus' },
+            { id: 'sekar_sawo', name: 'Sekar Sawo', description: 'Bunga tanaman sawo yang disebut rikuh' },
+            { id: 'manggar', name: 'Manggar', description: 'Kelopak bunga kelapa berbentuk rangkaian memanjang' },
+            { id: 'sekar_cengkeh', name: 'Sekar Cengkeh', description: 'Bunga cengkeh yang disebut polong' },
+            { id: 'sritaman', name: 'Sritaman', description: 'Taman dalam istana para raja' },
+            { id: 'sekar_mundu', name: 'Sekar Mundu', description: 'Bunga tanaman mundhu' },
+            { id: 'sekar_andong', name: 'Sekar Andong', description: 'Bunga tanaman andong dengan daun merah' },
+            { id: 'gedhangan', name: 'Gedhangan', description: 'Wujud tabung untuk menyimpan benda penting' },
+            { id: 'sekar_pala', name: 'Sekar Pala', description: 'Bunga tanaman pala dengan biji harum' },
+            { id: 'klampok_arum', name: 'Klampok Arum', description: 'Varietas jambu yang manis dan harum' },
+            { id: 'sekar_jali', name: 'Sekar Jali', description: 'Bunga tanaman jali dari rumput-rumputan' },
+            { id: 'sekar_lintang', name: 'Sekar Lintang', description: 'Lintang berarti bintang, bunganya adalah sinar' },
+            { id: 'sekar_kenanga', name: 'Sekar Kenanga', description: 'Bunga kenanga untuk upacara ritual' },
+            { id: 'sekar_jeruk', name: 'Sekar Jeruk', description: 'Bunga jeruk yang disebut alon (pelan)' },
+            { id: 'sekar_mindi', name: 'Sekar Mindi', description: 'Bunga pohon mindi yang kayunya bermanfaat' },
+            { id: 'tanjung_gunung', name: 'Tanjung Gunung', description: 'Tanaman dengan bunga harum dan tajuk peneduh' },
+            { id: 'sekar_kenikir', name: 'Sekar Kenikir', description: 'Bunga kenikir untuk kesehatan' },
+            { id: 'sekar_blimbing', name: 'Sekar Blimbing', description: 'Bunga tanaman belimbing' },
+            { id: 'sekar_pijetan', name: 'Sekar Pijetan', description: 'Buah pijetan yang asam manis menyegarkan' },
+            { id: 'sarimulat', name: 'Sarimulat', description: 'Sari adalah inti, mulat berarti mawas diri' },
+            { id: 'sekar_mrica', name: 'Sekar Mrica', description: 'Merica yang pedas namun membangkitkan selera' },
+            { id: 'sekar_kepel', name: 'Sekar Kepel', description: 'Tanaman kepel dengan buah menempel di batang' },
+            { id: 'truntum_kurung', name: 'Truntum Kurung', description: 'Tumaruntum berarti menurun ke generasi berikutnya' },
+            { id: 'jayakusuma', name: 'Jayakusuma', description: 'Anak Arjuna yang taat dan pahlawan muda' },
+            { id: 'rengganis', name: 'Rengganis', description: 'Tokoh perempuan cantik dalam cerita Menak' },
+            { id: 'sekar_gambir', name: 'Sekar Gambir', description: 'Bunga putih bersih sangat harum, kuncup ungu kemerahan' }
+        ];
+        
         // Camera handling
         const video = document.getElementById('camera');
         const canvas = document.getElementById('result-canvas');
@@ -310,37 +374,51 @@
                 return;
             }
             
-            showStatus('Applying batik pattern...', 'loading');
+            showStatus('Applying batik pattern using IDM-VTON AI...', 'loading');
             
             try {
+                let imageData = capturedImage;
+                if (imageData.startsWith('data:image/')) {
+                    imageData = imageData.split(',')[1];
+                }
+                
+                if (!imageData || imageData.length < 100) {
+                    throw new Error('Invalid image data');
+                }
+                
                 const response = await fetch(`${API_URL}/virtual_fitting`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        user_image: capturedImage.split(',')[1],
+                        user_image: imageData,
                         pattern_id: selectedPattern
                     })
                 });
                 
-                const data = await response.json();
-                
                 if (response.ok) {
+                    const data = await response.json();
                     resultImage = data.result_image;
+                    
                     const img = new Image();
                     img.onload = () => {
                         canvas.width = img.width;
                         canvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
+                        document.getElementById('save-photo').disabled = false;
+                        showStatus(`Batik applied successfully using ${data.method_used}!`, 'success');
+                    };
+                    img.onerror = () => {
+                        showStatus('Error loading result image', 'error');
                     };
                     img.src = resultImage;
                     
-                    document.getElementById('save-photo').disabled = false;
-                    showStatus('Batik applied successfully', 'success');
                 } else {
-                    showStatus('Error: ' + data.error, 'error');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Virtual fitting failed');
                 }
             } catch (err) {
-                showStatus('Error applying batik: ' + err.message, 'error');
+                console.error('Virtual fitting error:', err);
+                showStatus(`Error: ${err.message}. Please check console for details.`, 'error');
             }
         });
         
@@ -376,30 +454,32 @@
         // Load patterns
         async function loadPatterns() {
             try {
-                const response = await fetch(`${API_URL}/get_batik_patterns`);
-                const data = await response.json();
-                
                 const patternGrid = document.getElementById('pattern-grid');
                 patternGrid.innerHTML = '';
                 
-                // For demo purposes, create sample patterns
-                const samplePatterns = [
-                    'sekar_kemuning', 'ceplok_liring', 'sekar_duren', 
-                    'sekar_gayam', 'cakar_ayam', 'kawung_nitik'
-                ];
-                
-                samplePatterns.forEach(patternId => {
+                batikPatterns.forEach((pattern, index) => {
                     const patternDiv = document.createElement('div');
                     patternDiv.className = 'pattern-item';
+                    
+                    // Create a colored pattern placeholder based on pattern name
+                    const colors = ['#8B4513', '#D2691E', '#CD853F', '#DEB887', '#F4A460', '#DAA520'];
+                    const bgColor = colors[index % colors.length];
+                    
                     patternDiv.innerHTML = `
-                        <img src="/api/placeholder/100/80" alt="${patternId}">
-                        <p>${patternId.replace(/_/g, ' ')}</p>
+                        <div style="width: 100%; height: 80px; background: linear-gradient(45deg, ${bgColor}, ${colors[(index + 1) % colors.length]}); border-radius: 3px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; text-align: center; padding: 5px;">
+                            ${pattern.name}
+                        </div>
+                        <p style="font-size: 10px; margin-top: 5px;">${pattern.name}</p>
                     `;
-                    patternDiv.onclick = () => selectPattern(patternId, patternDiv);
+                    patternDiv.onclick = () => selectPattern(pattern.id, patternDiv);
+                    patternDiv.title = pattern.description;
                     patternGrid.appendChild(patternDiv);
                 });
+                
+                showStatus(`Loaded ${batikPatterns.length} batik patterns`, 'success');
             } catch (err) {
                 console.error('Error loading patterns:', err);
+                showStatus('Error loading patterns: ' + err.message, 'error');
             }
         }
         
@@ -409,6 +489,11 @@
             });
             element.classList.add('selected');
             selectedPattern = patternId;
+            
+            const pattern = batikPatterns.find(p => p.id === patternId);
+            if (pattern) {
+                showStatus(`Selected: ${pattern.name}`, 'success');
+            }
         }
         
         // Chatbot
@@ -436,44 +521,66 @@
                     })
                 });
                 
-                const data = await response.json();
-                
                 if (response.ok) {
+                    const data = await response.json();
                     addMessage(data.response, 'bot');
                 } else {
-                    addMessage('Maaf, terjadi kesalahan: ' + data.error, 'bot');
+                    throw new Error('API not available');
                 }
             } catch (err) {
-                addMessage('Maaf, tidak dapat terhubung ke server', 'bot');
+                // Fallback chatbot responses
+                const response = generateFallbackResponse(message);
+                addMessage(response, 'bot');
             }
         }
         
-        function addMessage(text, sender) {
-            const messagesDiv = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.textContent = text;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        function generateFallbackResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Check if asking about specific pattern
+            const pattern = batikPatterns.find(p => 
+                lowerMessage.includes(p.name.toLowerCase()) || 
+                lowerMessage.includes(p.id.replace(/_/g, ' '))
+            );
+            
+            if (pattern) {
+                return `${pattern.name}: ${pattern.description}`;
+            }
+            
+            // General responses
+            if (lowerMessage.includes('motif') || lowerMessage.includes('pattern')) {
+                return `Batik Nitik memiliki 60 motif tradisional. Beberapa yang populer adalah Sekar Kemuning, Ceplok Liring, Cakar Ayam, dan Kawung Nitik. Setiap motif memiliki makna filosofis yang mendalam.`;
+            }
+            
+            if (lowerMessage.includes('batik')) {
+                return 'Batik Nitik adalah batik klasik dari Yogyakarta dengan 60 motif tradisional. Setiap motif memiliki makna filosofis yang mencerminkan kebijaksanaan masyarakat Jawa.';
+            }
+            
+            return 'Maaf, saya membantu menjelaskan tentang motif-motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau ketik nama motif yang ingin Anda ketahui.';
         }
         
-        // Load saved photos
+        // Load saved photos with fallback
         async function loadSavedPhotos() {
             try {
                 const response = await fetch(`${API_URL}/get_saved_photos`);
-                const data = await response.json();
-                
-                const savedPhotosDiv = document.getElementById('saved-photos');
-                savedPhotosDiv.innerHTML = '';
-                
-                data.photos.forEach(photo => {
-                    const photoDiv = document.createElement('div');
-                    photoDiv.className = 'saved-photo';
-                    photoDiv.innerHTML = `<img src="${API_URL}${photo.path}" alt="${photo.filename}">`;
-                    savedPhotosDiv.appendChild(photoDiv);
-                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const savedPhotosDiv = document.getElementById('saved-photos');
+                    savedPhotosDiv.innerHTML = '';
+                    
+                    data.photos.forEach(photo => {
+                        const photoDiv = document.createElement('div');
+                        photoDiv.className = 'saved-photo';
+                        photoDiv.innerHTML = `<img src="${API_URL}${photo.path}" alt="${photo.filename}">`;
+                        savedPhotosDiv.appendChild(photoDiv);
+                    });
+                } else {
+                    throw new Error('API not available');
+                }
             } catch (err) {
-                console.error('Error loading saved photos:', err);
+                // Show placeholder message
+                const savedPhotosDiv = document.getElementById('saved-photos');
+                savedPhotosDiv.innerHTML = '<p style="text-align: center; color: #666;">Foto akan muncul setelah Anda menyimpan hasil virtual try-on</p>';
             }
         }
         
@@ -498,7 +605,7 @@
         window.onload = () => {
             loadPatterns();
             loadSavedPhotos();
-            addMessage('Selamat datang! Saya siap membantu Anda belajar tentang batik. Silakan tanyakan apa saja tentang motif batik.', 'bot');
+            addMessage('Selamat datang! Saya siap membantu Anda belajar tentang 60 motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau pilih motif dari galeri di atas.', 'bot');
         };
     </script>
 </body>
