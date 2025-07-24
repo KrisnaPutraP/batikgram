@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batik AR Virtual Dressing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        #camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        #camera, #result-canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        #result-canvas {
+            display: none;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .pattern-item {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .pattern-item:hover {
+            border-color: #4CAF50;
+        }
+        
+        .pattern-item.selected {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+        }
+        
+        .pattern-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+        
+        .pattern-item p {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        
+        #chatbot-container {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #chat-messages {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background-color: #fafafa;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .user-message {
+            background-color: #e3f2fd;
+            text-align: right;
+        }
+        
+        .bot-message {
+            background-color: #f5f5f5;
+        }
+        
+        #chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        #saved-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .saved-photo {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .saved-photo img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: #f44336;
+            margin-top: 10px;
+        }
+        
+        .success {
+            color: #4CAF50;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Batik AR Virtual Dressing</h1>
+        
+        <div class="main-grid">
+            <!-- Camera Section -->
+            <div class="section">
+                <h2>Virtual Try-On</h2>
+                <div id="camera-container">
+                    <video id="camera" autoplay></video>
+                    <canvas id="result-canvas"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="start-camera">Start Camera</button>
+                    <button id="capture-photo" disabled>Capture Photo</button>
+                    <button id="apply-batik" disabled>Apply Batik</button>
+                    <button id="save-photo" disabled>Save Photo</button>
+                </div>
+                <div id="status-message"></div>
+            </div>
+            
+            <!-- Pattern Selection -->
+            <div class="section">
+                <h2>Pilih Motif Batik</h2>
+                <div id="pattern-grid" class="pattern-grid">
+                    <!-- Patterns will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chatbot Section -->
+        <div class="section">
+            <h2>Tanya Tentang Batik</h2>
+            <div id="chatbot-container">
+                <div id="chat-messages"></div>
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Tanya tentang batik..." />
+                    <button id="send-message">Kirim</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Saved Photos -->
+        <div class="section">
+            <h2>Foto Tersimpan</h2>
+            <div id="saved-photos">
+                <!-- Saved photos will be displayed here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let selectedPattern = null;
+        let capturedImage = null;
+        let resultImage = null;
+        
+        // Camera handling
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('result-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        document.getElementById('start-camera').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 } 
+                });
+                video.srcObject = stream;
+                document.getElementById('capture-photo').disabled = false;
+                showStatus('Camera started successfully', 'success');
+            } catch (err) {
+                showStatus('Error accessing camera: ' + err.message, 'error');
+            }
+        });
+        
+        document.getElementById('capture-photo').addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            
+            capturedImage = canvas.toDataURL('image/jpeg');
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            
+            document.getElementById('apply-batik').disabled = false;
+            showStatus('Photo captured', 'success');
+        });
+        
+        document.getElementById('apply-batik').addEventListener('click', async () => {
+            if (!selectedPattern || !capturedImage) {
+                showStatus('Please select a pattern and capture a photo', 'error');
+                return;
+            }
+            
+            showStatus('Applying batik pattern...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_URL}/virtual_fitting`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_image: capturedImage.split(',')[1],
+                        pattern_id: selectedPattern
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultImage = data.result_image;
+                    const img = new Image();
+                    img.onload = () => {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = resultImage;
+                    
+                    document.getElementById('save-photo').disabled = false;
+                    showStatus('Batik applied successfully', 'success');
+                } else {
+                    showStatus('Error: ' + data.error, 'error');
+                }
+            } catch (err) {
+                showStatus('Error applying batik: ' + err.message, 'error');
+            }
+        });
+        
+        document.getElementById('save-photo').addEventListener('click', async () => {
+            if (!resultImage) {
+                showStatus('No result to save', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/save_photo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image: resultImage.split(',')[1],
+                        pattern_id: selectedPattern
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showStatus('Photo saved successfully', 'success');
+                    loadSavedPhotos();
+                } else {
+                    showStatus('Error saving photo: ' + data.error, 'error');
+                }
+            } catch (err) {
+                showStatus('Error saving photo: ' + err.message, 'error');
+            }
+        });
+        
+        // Load patterns
+        async function loadPatterns() {
+            try {
+                const response = await fetch(`${API_URL}/get_batik_patterns`);
+                const data = await response.json();
+                
+                const patternGrid = document.getElementById('pattern-grid');
+                patternGrid.innerHTML = '';
+                
+                // For demo purposes, create sample patterns
+                const samplePatterns = [
+                    'sekar_kemuning', 'ceplok_liring', 'sekar_duren', 
+                    'sekar_gayam', 'cakar_ayam', 'kawung_nitik'
+                ];
+                
+                samplePatterns.forEach(patternId => {
+                    const patternDiv = document.createElement('div');
+                    patternDiv.className = 'pattern-item';
+                    patternDiv.innerHTML = `
+                        <img src="/api/placeholder/100/80" alt="${patternId}">
+                        <p>${patternId.replace(/_/g, ' ')}</p>
+                    `;
+                    patternDiv.onclick = () => selectPattern(patternId, patternDiv);
+                    patternGrid.appendChild(patternDiv);
+                });
+            } catch (err) {
+                console.error('Error loading patterns:', err);
+            }
+        }
+        
+        function selectPattern(patternId, element) {
+            document.querySelectorAll('.pattern-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedPattern = patternId;
+        }
+        
+        // Chatbot
+        document.getElementById('send-message').addEventListener('click', sendMessage);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/chatbot`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: message,
+                        pattern_id: selectedPattern
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addMessage(data.response, 'bot');
+                } else {
+                    addMessage('Maaf, terjadi kesalahan: ' + data.error, 'bot');
+                }
+            } catch (err) {
+                addMessage('Maaf, tidak dapat terhubung ke server', 'bot');
+            }
+        }
+        
+        function addMessage(text, sender) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // Load saved photos
+        async function loadSavedPhotos() {
+            try {
+                const response = await fetch(`${API_URL}/get_saved_photos`);
+                const data = await response.json();
+                
+                const savedPhotosDiv = document.getElementById('saved-photos');
+                savedPhotosDiv.innerHTML = '';
+                
+                data.photos.forEach(photo => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'saved-photo';
+                    photoDiv.innerHTML = `<img src="${API_URL}${photo.path}" alt="${photo.filename}">`;
+                    savedPhotosDiv.appendChild(photoDiv);
+                });
+            } catch (err) {
+                console.error('Error loading saved photos:', err);
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.className = type;
+            statusDiv.textContent = message;
+            
+            if (type === 'loading') {
+                statusDiv.innerHTML = message + '<span class="loading"></span>';
+            }
+            
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                    statusDiv.className = '';
+                }, 3000);
+            }
+        }
+        
+        // Initialize
+        window.onload = () => {
+            loadPatterns();
+            loadSavedPhotos();
+            addMessage('Selamat datang! Saya siap membantu Anda belajar tentang batik. Silakan tanyakan apa saja tentang motif batik.', 'bot');
+        };
+    </script>
+</body>
+</html>

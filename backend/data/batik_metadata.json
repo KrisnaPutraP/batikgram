@@ -1,0 +1,362 @@
+{
+  "sekar_kemuning": {
+    "name": "Sekar Kemuning",
+    "description": "Motif bunga kemuning yang melambangkan keseimbangan antara cipta, rasa, dan karsa.",
+    "meaning": "Kemuning berasal dari kata 'ning' yang berarti konsentrasi penuh. Melambangkan keseimbangan antara pemikiran, kemampuan, dan sarana dalam menciptakan kemajuan masyarakat.",
+    "visual": "Bunga kecil berwarna putih dengan aroma harum"
+  },
+  "ceplok_liring": {
+    "name": "Ceplok Liring",
+    "description": "Penempatan ragam hias secara tidak beraturan dalam satu bidang.",
+    "meaning": "Mengajarkan untuk tidak menganggap sepele segala sesuatu. Sikap hati-hati dan menghargai orang lain harus diutamakan.",
+    "visual": "Pola ceplok dengan penempatan tidak beraturan"
+  },
+  "sekar_duren": {
+    "name": "Sekar Duren",
+    "description": "Motif bunga durian yang melambangkan sikap kritis.",
+    "meaning": "Peringatan bahwa sikap tidak kritis (dlongop) kurang terpuji karena tidak mendukung munculnya ide dan inovasi.",
+    "visual": "Bentuk bunga durian"
+  },
+  "sekar_gayam": {
+    "name": "Sekar Gayam",
+    "description": "Motif dari pohon gayam yang memberikan keteduhan.",
+    "meaning": "Gayuh berarti mencapai cita-cita dan ayem berarti tenteram. Harapan agar pemakainya memiliki tujuan hidup yang menentramkan.",
+    "visual": "Bunga pohon gayam"
+  },
+  "sekar_pacar": {
+    "name": "Sekar Pacar",
+    "description": "Bunga pacar yang digunakan dalam upacara Hindu.",
+    "meaning": "Hidup harus berusaha 'migunani' atau bermanfaat bagi sesama.",
+    "visual": "Bunga kecil berwarna kuning membentuk rangkaian"
+  },
+  "arumdalu": {
+    "name": "Arumdalu",
+    "description": "Bunga yang mekar di malam hari dan menyebarkan keharuman.",
+    "meaning": "Berbuat kebaikan tanpa memandang perbedaan, tetap arif dalam kegelapan.",
+    "visual": "Bunga putih yang harum di malam hari"
+  },
+  "sekar_srigading": {
+    "name": "Sekar Srigading",
+    "description": "Bunga sri gading yang menjadi simbol kerukunan.",
+    "meaning": "Harapan hidup rukun, tenang dan damai. Dalam pewayangan, menjadi pemersatu kedua istri Batara Kresna.",
+    "visual": "Bunga putih bertangkai merah"
+  },
+  "kemukus": {
+    "name": "Kemukus",
+    "description": "Lintang kemukus - bintang berekor yang terlihat di malam hari.",
+    "meaning": "Peringatan untuk selalu waspada setiap saat agar siap menghadapi segala kemungkinan.",
+    "visual": "Bentuk bintang berekor"
+  },
+  "sekar_gudhe": {
+    "name": "Sekar Gudhe",
+    "description": "Bunga tanaman gudhe dari keluarga kacang-kacangan.",
+    "meaning": "Simbol agar hidup bermanfaat bagi sesama (migunani) seperti kacang gudhe bagi manusia.",
+    "visual": "Bunga tanaman kacang gudhe"
+  },
+  "sekar_ketongkeng": {
+    "name": "Sekar Ketongkeng",
+    "description": "Sejenis anggrek yang bunganya menyerupai kalajengking.",
+    "meaning": "Keindahan yang unik dalam bentuk yang tidak biasa.",
+    "visual": "Bunga anggrek menyerupai kalajengking"
+  },
+  "brendi": {
+    "name": "Brendi",
+    "description": "Motif terinspirasi dari simbol minuman brendi dengan 3 koin berjajar.",
+    "meaning": "Simbol vitalitas dan stamina, digunakan secara bijaksana.",
+    "visual": "Pola 3 koin berjajar"
+  },
+  "cakar_ayam": {
+    "name": "Cakar Ayam",
+    "description": "Simbol semangat menyongsong hari esok untuk mencari rejeki.",
+    "meaning": "Seperti ayam yang mengais tanah di pagi buta, melambangkan kerja keras dan ketekunan.",
+    "visual": "Pola menyerupai cakar ayam"
+  },
+  "sekar_menur": {
+    "name": "Sekar Menur",
+    "description": "Bunga menur berwarna putih bersih yang saling menumpuk.",
+    "meaning": "Warna putih menyimbolkan kesucian. Berbuat kebaikan sebanyak-banyaknya tanpa pamrih.",
+    "visual": "Bunga putih bertumpuk"
+  },
+  "sekar_tebu": {
+    "name": "Sekar Tebu",
+    "description": "Bunga tebu yang dalam bahasa Jawa disebut gleges.",
+    "meaning": "Nasihat agar tidak menilai atau melakukan segala sesuatu secara berlebihan. Berhati-hati dan penuh perhitungan.",
+    "visual": "Bunga tanaman tebu"
+  },
+  "sekar_manggis": {
+    "name": "Sekar Manggis",
+    "description": "Bentuk bunga manggis, ratunya buah.",
+    "meaning": "Harapan agar pemakainya menjadi manusia terbaik lahir dan batin bagi masyarakat.",
+    "visual": "Bunga manggis"
+  },
+  "sekar_randu": {
+    "name": "Sekar Randu",
+    "description": "Tanaman randu yang menghasilkan kapuk.",
+    "meaning": "Sebaik-baiknya orang hidup haruslah memberi nikmat kepada sesama dan selalu menjaga nama baik.",
+    "visual": "Bunga randu yang menyebarkan bau harum"
+  },
+  "worawari_rumpuk": {
+    "name": "Worawari Rumpuk",
+    "description": "Bunga sepatu yang bertumpuk (ganda/berlipat).",
+    "meaning": "Warna merah dari bunga wora-wari adalah simbol cinta-gairah-semangat.",
+    "visual": "Bunga sepatu berlapis warna merah"
+  },
+  "sekar_duku": {
+    "name": "Sekar Duku",
+    "description": "Bentuk bunga duku dilihat dari atas.",
+    "meaning": "Keindahan alam yang sederhana namun bermakna.",
+    "visual": "Bunga duku dilihat dari atas"
+  },
+  "sekar_jagung": {
+    "name": "Sekar Jagung",
+    "description": "Bunga jagung yang dalam bahasa Jawa disebut sinuwun.",
+    "meaning": "Sinuwun berarti sesuatu yang ditinggikan/dihormati. Pesan untuk menghormati sesama terutama yang lebih tua.",
+    "visual": "Bunga jagung"
+  },
+  "jayakirana": {
+    "name": "Jayakirana",
+    "description": "Senapati Raja Angling Dharma dari kerajaan Malwapati.",
+    "meaning": "Kepahlawanan tanpa pamrih, rela berkorban untuk nusa dan bangsa.",
+    "visual": "Motif pahlawan pewayangan"
+  },
+  "mawur": {
+    "name": "Mawur",
+    "description": "Sesuatu yang tersebar berserakan atau tidak menjadi satu.",
+    "meaning": "Keberagaman dalam kesatuan.",
+    "visual": "Pola yang tersebar"
+  },
+  "sekar_tanjung": {
+    "name": "Sekar Tanjung",
+    "description": "Tanaman peneduh yang menghasilkan bunga berbau harum.",
+    "meaning": "Tanjung adalah akronim dari 'tansah njunjung'. Harapan agar selalu mengutamakan perbuatan baik.",
+    "visual": "Bunga harum berbentuk cantik"
+  },
+  "sekar_keben": {
+    "name": "Sekar Keben",
+    "description": "Pohon yang dapat tumbuh baik di daerah pantai.",
+    "meaning": "Harapan agar kehidupan manusia dapat mencari ketentraman di bawah keindahan.",
+    "visual": "Bunga berbentuk seperti kap lampu warna ungu"
+  },
+  "sekar_srengenge": {
+    "name": "Sekar Srengenge",
+    "description": "Bunga matahari yang selalu menghadap ke arah matahari.",
+    "meaning": "Simbol konsistensi dalam menghadapi kehidupan, tidak menghindar dari kesulitan.",
+    "visual": "Bunga kuning menghadap matahari"
+  },
+  "sekar_soka": {
+    "name": "Sekar Soka",
+    "description": "Tanaman dengan bunga majemuk serumpun berbagai warna.",
+    "meaning": "Dalam kehidupan, manusia akan mengalami berbagai rasa hati. Semua harus dialami dengan sabar.",
+    "visual": "Bunga majemuk warna merah, jingga, kuning, atau putih"
+  },
+  "sekar_nangka": {
+    "name": "Sekar Nangka",
+    "description": "Bunga nangka atau angkup dalam bahasa Jawa.",
+    "meaning": "Berhati-hati dalam menilai segala sesuatu, jangan hanya berdasarkan tampak luar.",
+    "visual": "Bunga nangka"
+  },
+  "kawung_nitik": {
+    "name": "Kawung Nitik",
+    "description": "Empat lingkaran yang saling bersinggungan dengan mlinjon di tengahnya.",
+    "meaning": "Simbol Keblat Papat Limo Pancer. Mengendalikan 4 hawa nafsu untuk menyatu dengan Tuhan (Manunggaling Kawulo Gusti).",
+    "visual": "Empat lingkaran bersinggungan"
+  },
+  "sekar_kentang": {
+    "name": "Sekar Kentang",
+    "description": "Bentuk bunga kentang sebagai ide motif.",
+    "meaning": "Harapan agar pemakainya selalu memberikan manfaat (migunani) bagi sesama.",
+    "visual": "Bunga tanaman kentang"
+  },
+  "sekar_pudak": {
+    "name": "Sekar Pudak",
+    "description": "Tanaman pandan berduri dengan bunga putih beraroma harum.",
+    "meaning": "Harapan agar pemakainya mampu menjaga kehormatan dan status sosial.",
+    "visual": "Bunga putih harum dari pandan berduri"
+  },
+  "sekar_dlima": {
+    "name": "Sekar Dlima",
+    "description": "Bentuk bunga delima.",
+    "meaning": "Kesuburan dan keberkahan.",
+    "visual": "Bunga delima"
+  },
+  "karawitan": {
+    "name": "Karawitan",
+    "description": "Bunga karawitan dan orkestra musik Jawa.",
+    "meaning": "Setiap orang harus hidup bermasyarakat dan bekerjasama, menghasilkan harmoni.",
+    "visual": "Motif bunga dengan nuansa musik"
+  },
+  "cinde_wilis": {
+    "name": "Cinde Wilis",
+    "description": "Kain sutra hijau bergambar bunga.",
+    "meaning": "Warna hijau melambangkan kesuburan dan kehidupan.",
+    "visual": "Pola bunga dengan dominasi warna hijau"
+  },
+  "sekar_mlati": {
+    "name": "Sekar Mlati",
+    "description": "Bunga melati simbol kesucian.",
+    "meaning": "Harapan agar pemakainya menciptakan suasana menyenangkan dan menyehatkan.",
+    "visual": "Bunga melati putih"
+  },
+  "kuncup_kanthil": {
+    "name": "Kuncup Kanthil",
+    "description": "Bunga kanthil putih yang harum.",
+    "meaning": "Tetap kemanthil - akan selalu dikenang. Harapan agar selalu dapat mengenang yang baik.",
+    "visual": "Kuncup bunga putih"
+  },
+  "sekar_dangan": {
+    "name": "Sekar Dangan",
+    "description": "Dangan berarti sembuh dalam bahasa Jawa halus.",
+    "meaning": "Harapan untuk kesembuhan atau masa depan yang lebih baik.",
+    "visual": "Motif bunga penyembuhan"
+  },
+  "sekar_sawo": {
+    "name": "Sekar Sawo",
+    "description": "Bunga tanaman sawo yang disebut rikuh.",
+    "meaning": "Peringatan agar tidak hidup seenaknya, harus memperhatikan orang lain.",
+    "visual": "Bunga sawo"
+  },
+  "manggar": {
+    "name": "Manggar",
+    "description": "Kelopak bunga kelapa berbentuk rangkaian memanjang.",
+    "meaning": "Simbol kesetiaan antara satu dengan yang lain.",
+    "visual": "Rangkaian bunga kelapa"
+  },
+  "sekar_cengkeh": {
+    "name": "Sekar Cengkeh",
+    "description": "Bunga cengkeh yang disebut polong.",
+    "meaning": "Polong/plong berarti lega/puas. Menerima apa yang diberikan Tuhan.",
+    "visual": "Bunga cengkeh"
+  },
+  "sritaman": {
+    "name": "Sritaman",
+    "description": "Taman dalam istana para raja.",
+    "meaning": "Harapan agar pemakainya selalu bersikap bijaksana dalam segala aspek.",
+    "visual": "Motif taman istana"
+  },
+  "sekar_mundu": {
+    "name": "Sekar Mundu",
+    "description": "Bunga tanaman mundhu.",
+    "meaning": "Dapat menyatu dengan lingkungan, membangun kebersamaan dan toleransi.",
+    "visual": "Bunga mundhu"
+  },
+  "sekar_andong": {
+    "name": "Sekar Andong",
+    "description": "Bunga tanaman andong dengan daun merah.",
+    "meaning": "Keindahan warna bunga putih di antara daun merah.",
+    "visual": "Bunga putih kecil dengan latar daun merah"
+  },
+  "gedhangan": {
+    "name": "Gedhangan",
+    "description": "Wujud tabung untuk menyimpan benda penting.",
+    "meaning": "Simbol kehendak manusia untuk menyimpan sesuatu yang bersifat rahasia.",
+    "visual": "Bentuk tabung"
+  },
+  "sekar_pala": {
+    "name": "Sekar Pala",
+    "description": "Bunga tanaman pala dengan biji harum.",
+    "meaning": "Kehidupan yang tenang namun tetap waspada. Peringatan agar tidak lengah.",
+    "visual": "Bunga pala"
+  },
+  "klampok_arum": {
+    "name": "Klampok Arum",
+    "description": "Varietas jambu yang manis dan harum.",
+    "meaning": "Harapan mendapatkan nama harum dan kebahagiaan.",
+    "visual": "Bunga jambu klampok"
+  },
+  "sekar_jali": {
+    "name": "Sekar Jali",
+    "description": "Bunga tanaman jali dari rumput-rumputan.",
+    "meaning": "Simbol kehidupan yang memberikan manfaat.",
+    "visual": "Bunga jali"
+  },
+  "sekar_lintang": {
+    "name": "Sekar Lintang",
+    "description": "Lintang berarti bintang, bunganya adalah sinar.",
+    "meaning": "Jadilah manusia besar layaknya bintang dan bermanfaat untuk orang lain.",
+    "visual": "Motif bintang bersinar"
+  },
+  "sekar_kenanga": {
+    "name": "Sekar Kenanga",
+    "description": "Bunga kenanga untuk upacara ritual.",
+    "meaning": "Selalu menghormati leluhur dengan berbuat kebaikan.",
+    "visual": "Bunga kenanga harum"
+  },
+  "sekar_jeruk": {
+    "name": "Sekar Jeruk",
+    "description": "Bunga jeruk yang disebut alon (pelan).",
+    "meaning": "Berjalan pelan sesuai hak, tidak terburu-buru. Harapan keselamatan hidup.",
+    "visual": "Bunga jeruk"
+  },
+  "sekar_mindi": {
+    "name": "Sekar Mindi",
+    "description": "Bunga pohon mindi yang kayunya bermanfaat.",
+    "meaning": "Harapan selalu berbuat bermanfaat bagi sesama.",
+    "visual": "Bunga pohon mindi"
+  },
+  "tanjung_gunung": {
+    "name": "Tanjung Gunung",
+    "description": "Tanaman dengan bunga harum dan tajuk peneduh.",
+    "meaning": "Harapan mendapatkan kebahagiaan, kehormatan, dan nama baik.",
+    "visual": "Bunga harum dengan tajuk rindang"
+  },
+  "sekar_kenikir": {
+    "name": "Sekar Kenikir",
+    "description": "Bunga kenikir untuk kesehatan.",
+    "meaning": "Simbol kegiatan bermanfaat yang selalu diharapkan.",
+    "visual": "Bunga kenikir"
+  },
+  "sekar_blimbing": {
+    "name": "Sekar Blimbing",
+    "description": "Bunga tanaman belimbing.",
+    "meaning": "Filosofi untuk memancarkan kebaikan.",
+    "visual": "Bunga belimbing"
+  },
+  "sekar_pijetan": {
+    "name": "Sekar Pijetan",
+    "description": "Buah pijetan yang asam manis menyegarkan.",
+    "meaning": "Harapan memelihara keseimbangan hidup yang tenang dan membahagiakan.",
+    "visual": "Motif buah pijetan"
+  },
+  "sarimulat": {
+    "name": "Sarimulat",
+    "description": "Sari adalah inti, mulat berarti mawas diri.",
+    "meaning": "Manusia harus selalu memiliki perilaku mawas diri.",
+    "visual": "Motif introspeksi"
+  },
+  "sekar_mrica": {
+    "name": "Sekar Mrica",
+    "description": "Merica yang pedas namun membangkitkan selera.",
+    "meaning": "Semua pengalaman hidup, manis maupun pedas, harus dihadapi.",
+    "visual": "Bunga lada"
+  },
+  "sekar_kepel": {
+    "name": "Sekar Kepel",
+    "description": "Tanaman kepel dengan buah menempel di batang.",
+    "meaning": "Semangat kebersamaan dan persatuan dalam menyelesaikan masalah.",
+    "visual": "Buah kepel di batang"
+  },
+  "truntum_kurung": {
+    "name": "Truntum Kurung",
+    "description": "Tumaruntum berarti menurun ke generasi berikutnya.",
+    "meaning": "Dengan sinar terang, kehidupan mulia dapat diturunkan ke generasi berikutnya.",
+    "visual": "Sinar bintang"
+  },
+  "jayakusuma": {
+    "name": "Jayakusuma",
+    "description": "Anak Arjuna yang taat dan pahlawan muda.",
+    "meaning": "Simbol teladan sikap patuh dalam menjalankan perintah sesepuh.",
+    "visual": "Motif pewayangan"
+  },
+  "rengganis": {
+    "name": "Rengganis",
+    "description": "Tokoh perempuan cantik dalam cerita Menak.",
+    "meaning": "Simbol langkah baik dalam membela kebenaran.",
+    "visual": "Motif putri cantik"
+  },
+  "sekar_gambir": {
+    "name": "Sekar Gambir",
+    "description": "Bunga putih bersih sangat harum, kuncup ungu kemerahan.",
+    "meaning": "Kesucian hati yang menimbulkan hal harum. Harapan berperilaku mulia.",
+    "visual": "Bunga putih dengan kuncup ungu"
+  }
+}
