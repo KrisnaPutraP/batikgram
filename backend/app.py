@@ -488,6 +488,55 @@ def save_photo():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/test_api', methods=['GET'])
+def test_api():
+    """Test API endpoints and connections"""
+    try:
+        from models.chatbot import BatikChatbot
+        
+        # Test chatbot initialization
+        chatbot = BatikChatbot()
+        
+        # Test simple query
+        test_response = chatbot.get_response("Apa itu Batik Nitik?")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'API test completed',
+            'groq_available': chatbot.client is not None,
+            'batik_data_loaded': len(chatbot.batik_data),
+            'test_response': test_response
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error', 
+            'message': f'API test failed: {str(e)}'
+        }), 500
+
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        pattern_id = data.get('pattern_id', None)
+        
+        if not query:
+            return jsonify({'error': 'Query is required'}), 400
+        
+        from models.chatbot import BatikChatbot
+        chatbot = BatikChatbot()
+        
+        response = chatbot.get_response(query, pattern_id)
+        
+        return jsonify({
+            'response': response,
+            'pattern_id': pattern_id,
+            'api_used': 'groq' if chatbot.client else 'fallback'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/chatbot', methods=['POST'])
 def chatbot_endpoint():
     """Handle chatbot queries about batik"""
