@@ -14,11 +14,6 @@ export default function CameraPage() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const router = useRouter()
-  // Update API URL untuk mencocokkan dengan backend Flask
-  // Ganti semua referensi API_URL dari 'http://localhost:5000' ke '/api'
-  // 1. Di bagian atas file, ganti:
-  // const API_URL = 'http://localhost:5000'
-  // const API_URL = '/api'
 
   useEffect(() => {
     startCamera()
@@ -79,13 +74,6 @@ export default function CameraPage() {
     }
   }
 
-  // 2. Update tombol "Kembali" untuk tidak mengarah ke login:
-  const goBack = () => {
-    // Hapus fungsi goBack atau arahkan ke halaman lain jika diperlukan
-    // Untuk sementara, bisa di-disable atau redirect ke home
-    window.location.reload()
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 relative overflow-hidden">
       {/* Batik Pattern Background */}
@@ -96,27 +84,21 @@ export default function CameraPage() {
         <div className="absolute bottom-40 right-20 w-36 h-36 bg-yellow-600 rounded-full"></div>
       </div>
 
-      {/* Header */}
-      <div className="relative z-10 p-4">
-        {/* 3. Update header untuk menghapus tombol kembali: */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="w-20"></div> {/* Spacer kosong */}
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 to-red-700 bg-clip-text text-transparent">
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-700 to-red-700 bg-clip-text text-transparent mb-2">
             Ambil Foto Anda
           </h1>
-          <div className="w-20"></div> {/* Spacer kosong */}
+          <p className="text-amber-600">Posisikan diri Anda dengan baik untuk hasil terbaik</p>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 pb-8">
         <Card className="w-full max-w-2xl shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center space-x-2 text-amber-800">
               <Camera className="w-6 h-6" />
               <span>Kamera Virtual Try-On</span>
             </CardTitle>
-            <p className="text-amber-600">Posisikan diri Anda dengan baik untuk hasil terbaik</p>
           </CardHeader>
 
           <CardContent className="space-y-6">

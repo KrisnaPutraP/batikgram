@@ -1,321 +1,94 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ArrowLeft, Search, Download, Sparkles, MessageCircle } from "lucide-react"
 
-interface Pattern {
-  id: number
-  name: string
-  image_url: string
-  description?: string
-}
-
 // Complete batik patterns data (60 motifs)
-const batikPatterns: Pattern[] = [
+const batikPatterns = [
   {
-    id: 1,
+    id: "sekar_kemuning",
     name: "Sekar Kemuning",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_kemuning.jpg",
+    description: "Motif bunga kemuning yang melambangkan keseimbangan antara cipta, rasa, dan karsa",
   },
   {
-    id: 2,
+    id: "ceplok_liring",
     name: "Ceplok Liring",
-    image_url: "http://127.0.0.1:5000/static/patterns/ceplok_liring.jpg",
+    description: "Penempatan ragam hias secara tidak beraturan dalam satu bidang",
   },
+  { id: "sekar_duren", name: "Sekar Duren", description: "Motif bunga durian yang melambangkan sikap kritis" },
+  { id: "sekar_gayam", name: "Sekar Gayam", description: "Motif dari pohon gayam yang memberikan keteduhan" },
+  { id: "sekar_pacar", name: "Sekar Pacar", description: "Bunga pacar yang digunakan dalam upacara Hindu" },
+  { id: "arumdalu", name: "Arumdalu", description: "Bunga yang mekar di malam hari dan menyebarkan keharuman" },
+  { id: "sekar_srigading", name: "Sekar Srigading", description: "Bunga sri gading yang menjadi simbol kerukunan" },
+  { id: "kemukus", name: "Kemukus", description: "Lintang kemukus - bintang berekor yang terlihat di malam hari" },
+  { id: "sekar_gudhe", name: "Sekar Gudhe", description: "Bunga tanaman gudhe dari keluarga kacang-kacangan" },
   {
-    id: 3,
-    name: "Sekar Duren",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_duren.jpg",
-  },
-  {
-    id: 4,
-    name: "Sekar Gayam",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_gayam.jpg",
-  },
-  {
-    id: 5,
-    name: "Sekar Pacar",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_pacar.jpg",
-  },
-  {
-    id: 6,
-    name: "Arumdalu",
-    image_url: "http://127.0.0.1:5000/static/patterns/arumdalu.jpg",
-  },
-  {
-    id: 7,
-    name: "Sekar Srigading",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_srigading.jpg",
-  },
-  {
-    id: 8,
-    name: "Kemukus",
-    image_url: "http://127.0.0.1:5000/static/patterns/kemukus.jpg",
-  },
-  {
-    id: 9,
-    name: "Sekar Gudhe",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_gudhe.jpg",
-  },
-  {
-    id: 10,
+    id: "sekar_ketongkeng",
     name: "Sekar Ketongkeng",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_ketongkeng.jpg",
+    description: "Sejenis anggrek yang bunganya menyerupai kalajengking",
   },
+  { id: "brendi", name: "Brendi", description: "Motif terinspirasi dari simbol minuman brendi dengan 3 koin berjajar" },
+  { id: "cakar_ayam", name: "Cakar Ayam", description: "Simbol semangat menyongsong hari esok untuk mencari rejeki" },
+  { id: "sekar_menur", name: "Sekar Menur", description: "Bunga menur berwarna putih bersih yang saling menumpuk" },
+  { id: "sekar_tebu", name: "Sekar Tebu", description: "Bunga tebu yang dalam bahasa Jawa disebut gleges" },
+  { id: "sekar_manggis", name: "Sekar Manggis", description: "Bentuk bunga manggis, ratunya buah" },
+  { id: "sekar_randu", name: "Sekar Randu", description: "Tanaman randu yang menghasilkan kapuk" },
+  { id: "worawari_rumpuk", name: "Worawari Rumpuk", description: "Bunga sepatu yang bertumpuk (ganda/berlipat)" },
+  { id: "sekar_duku", name: "Sekar Duku", description: "Bentuk bunga duku dilihat dari atas" },
+  { id: "sekar_jagung", name: "Sekar Jagung", description: "Bunga jagung yang dalam bahasa Jawa disebut sinuwun" },
+  { id: "jayakirana", name: "Jayakirana", description: "Senapati Raja Angling Dharma dari kerajaan Malwapati" },
+  { id: "mawur", name: "Mawur", description: "Sesuatu yang tersebar berserakan atau tidak menjadi satu" },
+  { id: "sekar_tanjung", name: "Sekar Tanjung", description: "Tanaman peneduh yang menghasilkan bunga berbau harum" },
+  { id: "sekar_keben", name: "Sekar Keben", description: "Pohon yang dapat tumbuh baik di daerah pantai" },
   {
-    id: 11,
-    name: "Brendi",
-    image_url: "http://127.0.0.1:5000/static/patterns/brendi.jpg",
-  },
-  {
-    id: 12,
-    name: "Cakar Ayam",
-    image_url: "http://127.0.0.1:5000/static/patterns/cakar_ayam.jpg",
-  },
-  {
-    id: 13,
-    name: "Sekar Menur",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_menur.jpg",
-  },
-  {
-    id: 14,
-    name: "Sekar Tebu",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_tebu.jpg",
-  },
-  {
-    id: 15,
-    name: "Sekar Manggis",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_manggis.jpg",
-  },
-  {
-    id: 16,
-    name: "Sekar Randu",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_randu.jpg",
-  },
-  {
-    id: 17,
-    name: "Worawari Rumpuk",
-    image_url: "http://127.0.0.1:5000/static/patterns/worawari_rumpuk.jpg",
-  },
-  {
-    id: 18,
-    name: "Sekar Duku",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_duku.jpg",
-  },
-  {
-    id: 19,
-    name: "Sekar Jagung",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_jagung.jpg",
-  },
-  {
-    id: 20,
-    name: "Jayakirana",
-    image_url: "http://127.0.0.1:5000/static/patterns/jayakirana.jpg",
-  },
-  {
-    id: 21,
-    name: "Mawur",
-    image_url: "http://127.0.0.1:5000/static/patterns/mawur.jpg",
-  },
-  {
-    id: 22,
-    name: "Sekar Tanjung",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_tanjung.jpg",
-  },
-  {
-    id: 23,
-    name: "Sekar Keben",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_keben.jpg",
-  },
-  {
-    id: 24,
+    id: "sekar_srengenge",
     name: "Sekar Srengenge",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_srengenge.jpg",
+    description: "Bunga matahari yang selalu menghadap ke arah matahari",
   },
+  { id: "sekar_soka", name: "Sekar Soka", description: "Tanaman dengan bunga majemuk serumpun berbagai warna" },
+  { id: "sekar_nangka", name: "Sekar Nangka", description: "Bunga nangka atau angkup dalam bahasa Jawa" },
   {
-    id: 25,
-    name: "Sekar Soka",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_soka.jpg",
-  },
-  {
-    id: 26,
-    name: "Sekar Nangka",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_nangka.jpg",
-  },
-  {
-    id: 27,
+    id: "kawung_nitik",
     name: "Kawung Nitik",
-    image_url: "http://127.0.0.1:5000/static/patterns/kawung_nitik.jpg",
+    description: "Empat lingkaran yang saling bersinggungan dengan mlinjon di tengahnya",
   },
-  {
-    id: 28,
-    name: "Sekar Kentang",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_kentang.jpg",
-  },
-  {
-    id: 29,
-    name: "Sekar Pudak",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_pudak.jpg",
-  },
-  {
-    id: 30,
-    name: "Sekar Dlima",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_dlima.jpg",
-  },
-  {
-    id: 31,
-    name: "Karawitan",
-    image_url: "http://127.0.0.1:5000/static/patterns/karawitan.jpg",
-  },
-  {
-    id: 32,
-    name: "Cinde Wilis",
-    image_url: "http://127.0.0.1:5000/static/patterns/cinde_wilis.jpg",
-  },
-  {
-    id: 33,
-    name: "Sekar Mlati",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_mlati.jpg",
-  },
-  {
-    id: 34,
-    name: "Kuncup Kanthil",
-    image_url: "http://127.0.0.1:5000/static/patterns/kuncup_kanthil.jpg",
-  },
-  {
-    id: 35,
-    name: "Sekar Dangan",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_dangan.jpg",
-  },
-  {
-    id: 36,
-    name: "Sekar Sawo",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_sawo.jpg",
-  },
-  {
-    id: 37,
-    name: "Manggar",
-    image_url: "http://127.0.0.1:5000/static/patterns/manggar.jpg",
-  },
-  {
-    id: 38,
-    name: "Sekar Cengkeh",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_cengkeh.jpg",
-  },
-  {
-    id: 39,
-    name: "Sritaman",
-    image_url: "http://127.0.0.1:5000/static/patterns/sritaman.jpg",
-  },
-  {
-    id: 40,
-    name: "Sekar Mundu",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_mundu.jpg",
-  },
-  {
-    id: 41,
-    name: "Sekar Andong",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_andong.jpg",
-  },
-  {
-    id: 42,
-    name: "Gedhangan",
-    image_url: "http://127.0.0.1:5000/static/patterns/gedhangan.jpg",
-  },
-  {
-    id: 43,
-    name: "Sekar Pala",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_pala.jpg",
-  },
-  {
-    id: 44,
-    name: "Klampok Arum",
-    image_url: "http://127.0.0.1:5000/static/patterns/klampok_arum.jpg",
-  },
-  {
-    id: 45,
-    name: "Sekar Jali",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_jali.jpg",
-  },
-  {
-    id: 46,
-    name: "Sekar Lintang",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_lintang.jpg",
-  },
-  {
-    id: 47,
-    name: "Sekar Kenanga",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_kenanga.jpg",
-  },
-  {
-    id: 48,
-    name: "Sekar Jeruk",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_jeruk.jpg",
-  },
-  {
-    id: 49,
-    name: "Sekar Mindi",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_mindi.jpg",
-  },
-  {
-    id: 50,
-    name: "Tanjung Gunung",
-    image_url: "http://127.0.0.1:5000/static/patterns/tanjung_gunung.jpg",
-  },
-  {
-    id: 51,
-    name: "Sekar Kenikir",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_kenikir.jpg",
-  },
-  {
-    id: 52,
-    name: "Sekar Blimbing",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_blimbing.jpg",
-  },
-  {
-    id: 53,
-    name: "Sekar Pijetan",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_pijetan.jpg",
-  },
-  {
-    id: 54,
-    name: "Sarimulat",
-    image_url: "http://127.0.0.1:5000/static/patterns/sarimulat.jpg",
-  },
-  {
-    id: 55,
-    name: "Sekar Mrica",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_mrica.jpg",
-  },
-  {
-    id: 56,
-    name: "Sekar Kepel",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_kepel.jpg",
-  },
-  {
-    id: 57,
-    name: "Truntum Kurung",
-    image_url: "http://127.0.0.1:5000/static/patterns/truntum_kurung.jpg",
-  },
-  {
-    id: 58,
-    name: "Jayakusuma",
-    image_url: "http://127.0.0.1:5000/static/patterns/jayakusuma.jpg",
-  },
-  {
-    id: 59,
-    name: "Rengganis",
-    image_url: "http://127.0.0.1:5000/static/patterns/rengganis.jpg",
-  },
-  {
-    id: 60,
-    name: "Sekar Gambir",
-    image_url: "http://127.0.0.1:5000/static/patterns/sekar_gambir.jpg",
-  },
+  { id: "sekar_kentang", name: "Sekar Kentang", description: "Bentuk bunga kentang sebagai ide motif" },
+  { id: "sekar_pudak", name: "Sekar Pudak", description: "Tanaman pandan berduri dengan bunga putih beraroma harum" },
+  { id: "sekar_dlima", name: "Sekar Dlima", description: "Bentuk bunga delima" },
+  { id: "karawitan", name: "Karawitan", description: "Bunga karawitan dan orkestra musik Jawa" },
+  { id: "cinde_wilis", name: "Cinde Wilis", description: "Kain sutra hijau bergambar bunga" },
+  { id: "sekar_mlati", name: "Sekar Mlati", description: "Bunga melati simbol kesucian" },
+  { id: "kuncup_kanthil", name: "Kuncup Kanthil", description: "Bunga kanthil putih yang harum" },
+  { id: "sekar_dangan", name: "Sekar Dangan", description: "Dangan berarti sembuh dalam bahasa Jawa halus" },
+  { id: "sekar_sawo", name: "Sekar Sawo", description: "Bunga tanaman sawo yang disebut rikuh" },
+  { id: "manggar", name: "Manggar", description: "Kelopak bunga kelapa berbentuk rangkaian memanjang" },
+  { id: "sekar_cengkeh", name: "Sekar Cengkeh", description: "Bunga cengkeh yang disebut polong" },
+  { id: "sritaman", name: "Sritaman", description: "Taman dalam istana para raja" },
+  { id: "sekar_mundu", name: "Sekar Mundu", description: "Bunga tanaman mundhu" },
+  { id: "sekar_andong", name: "Sekar Andong", description: "Bunga tanaman andong dengan daun merah" },
+  { id: "gedhangan", name: "Gedhangan", description: "Wujud tabung untuk menyimpan benda penting" },
+  { id: "sekar_pala", name: "Sekar Pala", description: "Bunga tanaman pala dengan biji harum" },
+  { id: "klampok_arum", name: "Klampok Arum", description: "Varietas jambu yang manis dan harum" },
+  { id: "sekar_jali", name: "Sekar Jali", description: "Bunga tanaman jali dari rumput-rumputan" },
+  { id: "sekar_lintang", name: "Sekar Lintang", description: "Lintang berarti bintang, bunganya adalah sinar" },
+  { id: "sekar_kenanga", name: "Sekar Kenanga", description: "Bunga kenanga untuk upacara ritual" },
+  { id: "sekar_jeruk", name: "Sekar Jeruk", description: "Bunga jeruk yang disebut alon (pelan)" },
+  { id: "sekar_mindi", name: "Sekar Mindi", description: "Bunga pohon mindi yang kayunya bermanfaat" },
+  { id: "tanjung_gunung", name: "Tanjung Gunung", description: "Tanaman dengan bunga harum dan tajuk peneduh" },
+  { id: "sekar_kenikir", name: "Sekar Kenikir", description: "Bunga kenikir untuk kesehatan" },
+  { id: "sekar_blimbing", name: "Sekar Blimbing", description: "Bunga tanaman belimbing" },
+  { id: "sekar_pijetan", name: "Sekar Pijetan", description: "Buah pijetan yang asam manis menyegarkan" },
+  { id: "sarimulat", name: "Sarimulat", description: "Sari adalah inti, mulat berarti mawas diri" },
+  { id: "sekar_mrica", name: "Sekar Mrica", description: "Merica yang pedas namun membangkitkan selera" },
+  { id: "sekar_kepel", name: "Sekar Kepel", description: "Tanaman kepel dengan buah menempel di batang" },
+  { id: "truntum_kurung", name: "Truntum Kurung", description: "Tumaruntum berarti menurun ke generasi berikutnya" },
+  { id: "jayakusuma", name: "Jayakusuma", description: "Anak Arjuna yang taat dan pahlawan muda" },
+  { id: "rengganis", name: "Rengganis", description: "Tokoh perempuan cantik dalam cerita Menak" },
+  { id: "sekar_gambir", name: "Sekar Gambir", description: "Bunga putih bersih sangat harum, kuncup ungu kemerahan" },
 ]
 
 export default function PatternsPage() {
@@ -351,12 +124,12 @@ export default function PatternsPage() {
   const filteredPatterns = batikPatterns.filter(
     (pattern) =>
       pattern.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pattern.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      pattern.description.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const selectPattern = (patternId: string) => {
     setSelectedPattern(patternId)
-    const pattern = batikPatterns.find((p) => p.id.toString() === patternId)
+    const pattern = batikPatterns.find((p) => p.id === patternId)
     if (pattern) {
       // Add chatbot message about selected pattern
       setChatMessages((prev) => [
@@ -415,7 +188,7 @@ export default function PatternsPage() {
 
     // Check if asking about specific pattern
     const pattern = batikPatterns.find(
-      (p) => lowerMessage.includes(p.name.toLowerCase()) || lowerMessage.includes(p.id.toString()),
+      (p) => lowerMessage.includes(p.name.toLowerCase()) || lowerMessage.includes(p.id.replace(/_/g, " ")),
     )
 
     if (pattern) {
@@ -495,7 +268,7 @@ export default function PatternsPage() {
                 {selectedPattern && (
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                     <p className="text-sm font-medium text-amber-800">Motif Terpilih:</p>
-                    <p className="text-amber-700">{batikPatterns.find((p) => p.id.toString() === selectedPattern)?.name}</p>
+                    <p className="text-amber-700">{batikPatterns.find((p) => p.id === selectedPattern)?.name}</p>
                   </div>
                 )}
 
@@ -554,18 +327,18 @@ export default function PatternsPage() {
                   {filteredPatterns.map((pattern, index) => {
                     const colors = ["#8B4513", "#D2691E", "#CD853F", "#DEB887", "#F4A460", "#DAA520"]
                     const bgColor = colors[index % colors.length]
-                    const isSelected = selectedPattern === pattern.id.toString()
+                    const isSelected = selectedPattern === pattern.id
 
                     return (
                       <div
                         key={pattern.id}
-                        onClick={() => selectPattern(pattern.id.toString())}
+                        onClick={() => selectPattern(pattern.id)}
                         className={`cursor-pointer border-2 rounded-lg p-2 transition-all hover:shadow-md ${
                           isSelected
                             ? "border-amber-500 bg-amber-50 shadow-md"
                             : "border-amber-200 hover:border-amber-400"
                         }`}
-                        title={pattern.name}
+                        title={pattern.description}
                       >
                         <div
                           className="w-full h-20 rounded-md flex items-center justify-center text-white text-xs text-center p-2 mb-2"
