@@ -10,35 +10,60 @@ export default function CameraPage() {
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isVideoReady, setIsVideoReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const router = useRouter()
-  // Update API URL untuk mencocokkan dengan backend Flask
-  // Ganti semua referensi API_URL dari 'http://localhost:5000' ke '/api'
-  // 1. Di bagian atas file, ganti:
-  // const API_URL = 'http://localhost:5000'
-  // const API_URL = '/api'
 
   useEffect(() => {
     startCamera()
     return () => {
+      // Cleanup function
       if (stream) {
         stream.getTracks().forEach((track) => track.stop())
       }
     }
-  }, [])
+  }, []) // No dependency on stream to avoid infinite loop
+
+  // Separate effect to handle stream updates
+  useEffect(() => {
+    if (stream && videoRef.current) {
+      videoRef.current.srcObject = stream
+    }
+  }, [stream])
 
   const startCamera = async () => {
     try {
       setIsLoading(true)
       setError(null)
+      setIsVideoReady(false)
+      
+      // Stop any existing stream first
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop())
+      }
+      
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480, facingMode: "user" },
+        video: { 
+          width: { ideal: 640 }, 
+          height: { ideal: 480 }, 
+          facingMode: "user",
+          frameRate: { ideal: 30 }
+        },
       })
+      
       setStream(mediaStream)
+      
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream
+        
+        // Ensure video starts playing
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().then(() => {
+            setIsVideoReady(true)
+          }).catch(console.error)
+        }
       }
     } catch (err) {
       setError("Tidak dapat mengakses kamera. Pastikan izin kamera telah diberikan.")
@@ -68,9 +93,20 @@ export default function CameraPage() {
     sessionStorage.setItem("capturedImage", imageData)
   }
 
-  const retakePhoto = () => {
+  const retakePhoto = async () => {
     setCapturedImage(null)
     sessionStorage.removeItem("capturedImage")
+    setIsVideoReady(false)
+    
+    // Restart camera stream
+    if (stream) {
+      // Stop existing stream
+      stream.getTracks().forEach((track) => track.stop())
+      setStream(null)
+    }
+    
+    // Start camera again
+    await startCamera()
   }
 
   const proceedToPatterns = () => {
@@ -79,10 +115,7 @@ export default function CameraPage() {
     }
   }
 
-  // 2. Update tombol "Kembali" untuk tidak mengarah ke login:
   const goBack = () => {
-    // Hapus fungsi goBack atau arahkan ke halaman lain jika diperlukan
-    // Untuk sementara, bisa di-disable atau redirect ke home
     window.location.reload()
   }
 
@@ -98,7 +131,6 @@ export default function CameraPage() {
 
       {/* Header */}
       <div className="relative z-10 p-4">
-        {/* 3. Update header untuk menghapus tombol kembali: */}
         <div className="flex items-center justify-between mb-6">
           <div className="w-20"></div> {/* Spacer kosong */}
           <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 to-red-700 bg-clip-text text-transparent">
@@ -132,11 +164,11 @@ export default function CameraPage() {
                     className="w-full h-auto max-h-96 object-cover"
                     style={{ transform: "scaleX(-1)" }} // Mirror effect
                   />
-                  {isLoading && (
+                  {(isLoading || !isVideoReady) && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                       <div className="text-white text-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-                        <p>Memuat kamera...</p>
+                        <p>{isLoading ? "Memuat kamera..." : "Menghubungkan kamera..."}</p>
                       </div>
                     </div>
                   )}
@@ -151,13 +183,15 @@ export default function CameraPage() {
                     </div>
                   )}
 
-                  {/* Camera guide overlay */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-white/50"></div>
-                    <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-white/50"></div>
-                    <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-white/50"></div>
-                    <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-white/50"></div>
-                  </div>
+                  {/* Camera guide overlay - only show when video is ready */}
+                  {isVideoReady && (
+                    <div className="absolute inset-0 pointer-events-none">
+                      <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-white/50"></div>
+                      <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-white/50"></div>
+                      <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-white/50"></div>
+                      <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-white/50"></div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="relative">
@@ -181,11 +215,11 @@ export default function CameraPage() {
               {!capturedImage ? (
                 <Button
                   onClick={capturePhoto}
-                  disabled={isLoading || !!error}
-                  className="bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-700 hover:to-red-700 text-white font-semibold px-8 py-3 shadow-lg"
+                  disabled={isLoading || !!error || !isVideoReady}
+                  className="bg-gradient-to-r from-amber-600 to-red-600 hover:from-amber-700 hover:to-red-700 text-white font-semibold px-8 py-3 shadow-lg disabled:opacity-50"
                 >
                   <Camera className="w-5 h-5 mr-2" />
-                  Ambil Foto
+                  {isVideoReady ? "Ambil Foto" : "Memuat..."}
                 </Button>
               ) : (
                 <div className="flex space-x-4">
@@ -193,9 +227,10 @@ export default function CameraPage() {
                     onClick={retakePhoto}
                     variant="outline"
                     className="border-amber-300 text-amber-700 hover:bg-amber-50 px-6 py-3 bg-transparent"
+                    disabled={isLoading}
                   >
                     <RotateCcw className="w-4 h-4 mr-2" />
-                    Foto Ulang
+                    {isLoading ? "Memuat..." : "Foto Ulang"}
                   </Button>
                   <Button
                     onClick={proceedToPatterns}

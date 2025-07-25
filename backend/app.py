@@ -7,6 +7,8 @@ from PIL import Image
 import json
 from datetime import datetime
 from dotenv import load_dotenv
+from flask import send_from_directory
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -68,19 +70,21 @@ def health_check():
 
 @app.route('/get_batik_patterns', methods=['GET'])
 def get_batik_patterns():
-    """Get list of available batik patterns"""
+    """Get list of available batik patterns from organized folders"""
     patterns = []
-    pattern_dir = 'data/batik_patterns'
+    pattern_dir = 'data/batik_patterns/organized'
     
-    for filename in os.listdir(pattern_dir):
-        if filename.endswith(('.png', '.jpg', '.jpeg')):
-            pattern_id = os.path.splitext(filename)[0]
-            patterns.append({
-                'id': pattern_id,
-                'name': pattern_id.replace('_', ' ').title(),
-                'filename': filename
-            })
-    
+    for folder in os.listdir(pattern_dir):
+        folder_path = os.path.join(pattern_dir, folder)
+        if os.path.isdir(folder_path):
+            image_path = os.path.join(folder_path, f"{folder}.jpg")
+            if os.path.exists(image_path):
+                patterns.append({
+                    'id': folder,
+                    'name': folder.replace('_', ' ').title(),
+                    'filename': f"{folder}.jpg"
+                })
+
     return jsonify({"patterns": patterns}), 200
 
 @app.route('/virtual_fitting', methods=['POST'])
@@ -580,17 +584,12 @@ def serve_saved_photo(filename):
     """Serve saved photo"""
     return send_file(os.path.join('saved_photos', filename))
 
-@app.route('/pattern_images/<pattern_id>')
-def serve_pattern_image(pattern_id):
-    """Serve batik pattern images"""
-    pattern_path = f'data/batik_patterns/{pattern_id}.jpg'
-    if os.path.exists(pattern_path):
-        return send_file(pattern_path)
-    # If .jpg doesn't exist, try .png
-    pattern_path = f'data/batik_patterns/{pattern_id}.png'
-    if os.path.exists(pattern_path):
-        return send_file(pattern_path)
-    return "Pattern not found", 404
+
+@app.route('/patterns/<folder>/<filename>')
+def serve_pattern_image(folder, filename):
+    """Serve organized batik pattern image from subfolder"""
+    return send_from_directory(f"data/batik_patterns/organized/{folder}", filename)
+
 
 def create_procedural_pattern(pattern_id):
     """Create a procedural batik pattern if file doesn't exist"""

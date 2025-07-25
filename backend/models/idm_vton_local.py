@@ -176,7 +176,7 @@ class IDMVTONLocal:
                 negative_prompt=negative_prompt,
                 image=person_resized,
                 mask_image=mask,
-                num_inference_steps=12,  # Very fast
+                num_inference_steps=5,
                 guidance_scale=7.0,
                 height=target_size[1],
                 width=target_size[0]
