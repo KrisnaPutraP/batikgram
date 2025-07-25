@@ -128,6 +128,9 @@ class IDMVTONWrapper:
         """Create shirt-shaped garment from pattern"""
         try:
             # Standard shirt dimensions (aspect ratio approximately 3:4)
+            if isinstance(pattern, Image.Image):
+                pattern = np.array(pattern)
+    
             shirt_width = 400
             shirt_height = 600
             

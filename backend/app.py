@@ -28,6 +28,9 @@ chatbot = BatikChatbot()
 
 # Conditional import for IDM-VTON
 try:
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     from models.idm_vton import get_idm_vton_model
     IDM_VTON_AVAILABLE = True
     logger.info("✅ IDM-VTON wrapper available")
