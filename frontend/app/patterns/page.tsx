@@ -11,6 +11,7 @@ interface Pattern {
   id: number
   name: string
   image_url: string
+  description?: string
 }
 
 // Complete batik patterns data (60 motifs)

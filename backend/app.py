@@ -50,7 +50,7 @@ os.makedirs('saved_photos', exist_ok=True)
 
 @app.route('/')
 def serve_frontend():
-    return send_file('../frontend/index.html')
+    return send_file('../frontend/app/page.tsx')
 
 @app.route('/<path:filename>')
 def serve_static(filename):
