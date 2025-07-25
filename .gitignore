@@ -122,3 +122,17 @@ storybook-static
 # Temporary files
 *.tmp
 *.temp
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Compiled Python files in any subdirectory
+**/__pycache__/
+**/*.pyc
+
+# Pytest cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints (jika pakai Jupyter)
+.ipynb_checkpoints/
