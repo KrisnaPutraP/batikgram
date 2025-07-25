@@ -268,7 +268,7 @@
     </div>
     
     <script>
-        const API_URL = 'http://localhost:5000';
+        const API_URL = 'http://127.0.0.1:5000';
         let selectedPattern = null;
         let capturedImage = null;
         let resultImage = null;
@@ -534,6 +534,15 @@
             }
         }
         
+        function addMessage(message, type) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = message;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
         function generateFallbackResponse(message) {
             const lowerMessage = message.toLowerCase();
             
@@ -547,7 +556,29 @@
                 return `${pattern.name}: ${pattern.description}`;
             }
             
-            // General responses
+            // Enhanced responses based on keywords
+            if (lowerMessage.includes('makna') || lowerMessage.includes('filosofi')) {
+                if (selectedPattern) {
+                    const selectedMotif = batikPatterns.find(p => p.id === selectedPattern);
+                    if (selectedMotif) {
+                        return `Makna motif ${selectedMotif.name}: ${selectedMotif.description}`;
+                    }
+                }
+                return 'Setiap motif Batik Nitik memiliki makna filosofis yang mendalam. Pilih motif tertentu dari galeri untuk mengetahui maknanya lebih detail.';
+            }
+            
+            if (lowerMessage.includes('sejarah') || lowerMessage.includes('asal usul')) {
+                return 'Batik Nitik adalah batik klasik dari Yogyakarta. Motifnya terinspirasi dari kain tenun India namun telah diadaptasi dengan nilai-nilai budaya Jawa. Teknik pembuatannya sangat detail dan membutuhkan ketelitian tinggi.';
+            }
+            
+            if (lowerMessage.includes('cara pakai') || lowerMessage.includes('kapan dipakai')) {
+                return 'Batik Nitik biasanya digunakan untuk acara formal, upacara adat, dan perayaan khusus. Setiap motif memiliki makna yang sesuai untuk berbagai kesempatan.';
+            }
+            
+            if (lowerMessage.includes('warna') || lowerMessage.includes('color')) {
+                return 'Batik Nitik tradisional menggunakan warna-warna natural seperti coklat, hitam, dan krem. Setiap warna memiliki simbolisme tersendiri dalam budaya Jawa.';
+            }
+            
             if (lowerMessage.includes('motif') || lowerMessage.includes('pattern')) {
                 return `Batik Nitik memiliki 60 motif tradisional. Beberapa yang populer adalah Sekar Kemuning, Ceplok Liring, Cakar Ayam, dan Kawung Nitik. Setiap motif memiliki makna filosofis yang mendalam.`;
             }
@@ -556,7 +587,11 @@
                 return 'Batik Nitik adalah batik klasik dari Yogyakarta dengan 60 motif tradisional. Setiap motif memiliki makna filosofis yang mencerminkan kebijaksanaan masyarakat Jawa.';
             }
             
-            return 'Maaf, saya membantu menjelaskan tentang motif-motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau ketik nama motif yang ingin Anda ketahui.';
+            if (lowerMessage.includes('halo') || lowerMessage.includes('hai') || lowerMessage.includes('hello')) {
+                return 'Halo! Saya siap membantu Anda belajar tentang Batik Nitik. Silakan tanyakan tentang motif tertentu, makna filosofis, atau aspek lain dari batik tradisional ini.';
+            }
+            
+            return 'Maaf, saya membantu menjelaskan tentang motif-motif Batik Nitik. Silakan tanyakan tentang motif tertentu, makna filosofis, sejarah, atau aspek lain dari batik. Anda juga bisa memilih motif dari galeri di atas.';
         }
         
         // Load saved photos with fallback
