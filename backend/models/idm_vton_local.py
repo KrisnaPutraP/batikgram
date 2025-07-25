@@ -90,7 +90,7 @@ class IDMVTONLocal:
                 torch_dtype=torch.float32,  # Always use float32 for CPU
                 safety_checker=None,
                 requires_safety_checker=False,
-                use_safetensors=True
+                use_safetensors=False
             )
             
             # Explicitly disable xformers
@@ -154,7 +154,7 @@ class IDMVTONLocal:
                 person_image = Image.fromarray(person_image)
             
             person_image = person_image.convert('RGB')
-            target_size = (512, 768)
+            target_size = (768, 1024)
             person_resized = person_image.resize(target_size, Image.LANCZOS)
             
             # Preprocess garment
@@ -176,7 +176,7 @@ class IDMVTONLocal:
                 negative_prompt=negative_prompt,
                 image=person_resized,
                 mask_image=mask,
-                num_inference_steps=5,  # Very fast
+                num_inference_steps=5,
                 guidance_scale=7.0,
                 height=target_size[1],
                 width=target_size[0]

@@ -7,6 +7,8 @@ from PIL import Image
 import json
 from datetime import datetime
 from dotenv import load_dotenv
+from flask import send_from_directory
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,6 +30,9 @@ chatbot = BatikChatbot()
 
 # Conditional import for IDM-VTON
 try:
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     from models.idm_vton import get_idm_vton_model
     IDM_VTON_AVAILABLE = True
     logger.info("✅ IDM-VTON wrapper available")
@@ -65,19 +70,21 @@ def health_check():
 
 @app.route('/get_batik_patterns', methods=['GET'])
 def get_batik_patterns():
-    """Get list of available batik patterns"""
+    """Get list of available batik patterns from organized folders"""
     patterns = []
-    pattern_dir = 'data/batik_patterns'
+    pattern_dir = 'data/batik_patterns/organized'
     
-    for filename in os.listdir(pattern_dir):
-        if filename.endswith(('.png', '.jpg', '.jpeg')):
-            pattern_id = os.path.splitext(filename)[0]
-            patterns.append({
-                'id': pattern_id,
-                'name': pattern_id.replace('_', ' ').title(),
-                'filename': filename
-            })
-    
+    for folder in os.listdir(pattern_dir):
+        folder_path = os.path.join(pattern_dir, folder)
+        if os.path.isdir(folder_path):
+            image_path = os.path.join(folder_path, f"{folder}.jpg")
+            if os.path.exists(image_path):
+                patterns.append({
+                    'id': folder,
+                    'name': folder.replace('_', ' ').title(),
+                    'filename': f"{folder}.jpg"
+                })
+
     return jsonify({"patterns": patterns}), 200
 
 @app.route('/virtual_fitting', methods=['POST'])
@@ -485,6 +492,55 @@ def save_photo():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/test_api', methods=['GET'])
+def test_api():
+    """Test API endpoints and connections"""
+    try:
+        from models.chatbot import BatikChatbot
+        
+        # Test chatbot initialization
+        chatbot = BatikChatbot()
+        
+        # Test simple query
+        test_response = chatbot.get_response("Apa itu Batik Nitik?")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'API test completed',
+            'groq_available': chatbot.client is not None,
+            'batik_data_loaded': len(chatbot.batik_data),
+            'test_response': test_response
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error', 
+            'message': f'API test failed: {str(e)}'
+        }), 500
+
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    try:
+        data = request.get_json()
+        query = data.get('query', '')
+        pattern_id = data.get('pattern_id', None)
+        
+        if not query:
+            return jsonify({'error': 'Query is required'}), 400
+        
+        from models.chatbot import BatikChatbot
+        chatbot = BatikChatbot()
+        
+        response = chatbot.get_response(query, pattern_id)
+        
+        return jsonify({
+            'response': response,
+            'pattern_id': pattern_id,
+            'api_used': 'groq' if chatbot.client else 'fallback'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/chatbot', methods=['POST'])
 def chatbot_endpoint():
     """Handle chatbot queries about batik"""
@@ -528,17 +584,12 @@ def serve_saved_photo(filename):
     """Serve saved photo"""
     return send_file(os.path.join('saved_photos', filename))
 
-@app.route('/pattern_images/<pattern_id>')
-def serve_pattern_image(pattern_id):
-    """Serve batik pattern images"""
-    pattern_path = f'data/batik_patterns/{pattern_id}.jpg'
-    if os.path.exists(pattern_path):
-        return send_file(pattern_path)
-    # If .jpg doesn't exist, try .png
-    pattern_path = f'data/batik_patterns/{pattern_id}.png'
-    if os.path.exists(pattern_path):
-        return send_file(pattern_path)
-    return "Pattern not found", 404
+
+@app.route('/patterns/<folder>/<filename>')
+def serve_pattern_image(folder, filename):
+    """Serve organized batik pattern image from subfolder"""
+    return send_from_directory(f"data/batik_patterns/organized/{folder}", filename)
+
 
 def create_procedural_pattern(pattern_id):
     """Create a procedural batik pattern if file doesn't exist"""

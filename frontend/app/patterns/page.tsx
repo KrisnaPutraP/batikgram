@@ -1,95 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ArrowLeft, Search, Download, Sparkles, MessageCircle } from "lucide-react"
 
-// Complete batik patterns data (60 motifs)
-const batikPatterns = [
-  {
-    id: "sekar_kemuning",
-    name: "Sekar Kemuning",
-    description: "Motif bunga kemuning yang melambangkan keseimbangan antara cipta, rasa, dan karsa",
-  },
-  {
-    id: "ceplok_liring",
-    name: "Ceplok Liring",
-    description: "Penempatan ragam hias secara tidak beraturan dalam satu bidang",
-  },
-  { id: "sekar_duren", name: "Sekar Duren", description: "Motif bunga durian yang melambangkan sikap kritis" },
-  { id: "sekar_gayam", name: "Sekar Gayam", description: "Motif dari pohon gayam yang memberikan keteduhan" },
-  { id: "sekar_pacar", name: "Sekar Pacar", description: "Bunga pacar yang digunakan dalam upacara Hindu" },
-  { id: "arumdalu", name: "Arumdalu", description: "Bunga yang mekar di malam hari dan menyebarkan keharuman" },
-  { id: "sekar_srigading", name: "Sekar Srigading", description: "Bunga sri gading yang menjadi simbol kerukunan" },
-  { id: "kemukus", name: "Kemukus", description: "Lintang kemukus - bintang berekor yang terlihat di malam hari" },
-  { id: "sekar_gudhe", name: "Sekar Gudhe", description: "Bunga tanaman gudhe dari keluarga kacang-kacangan" },
-  {
-    id: "sekar_ketongkeng",
-    name: "Sekar Ketongkeng",
-    description: "Sejenis anggrek yang bunganya menyerupai kalajengking",
-  },
-  { id: "brendi", name: "Brendi", description: "Motif terinspirasi dari simbol minuman brendi dengan 3 koin berjajar" },
-  { id: "cakar_ayam", name: "Cakar Ayam", description: "Simbol semangat menyongsong hari esok untuk mencari rejeki" },
-  { id: "sekar_menur", name: "Sekar Menur", description: "Bunga menur berwarna putih bersih yang saling menumpuk" },
-  { id: "sekar_tebu", name: "Sekar Tebu", description: "Bunga tebu yang dalam bahasa Jawa disebut gleges" },
-  { id: "sekar_manggis", name: "Sekar Manggis", description: "Bentuk bunga manggis, ratunya buah" },
-  { id: "sekar_randu", name: "Sekar Randu", description: "Tanaman randu yang menghasilkan kapuk" },
-  { id: "worawari_rumpuk", name: "Worawari Rumpuk", description: "Bunga sepatu yang bertumpuk (ganda/berlipat)" },
-  { id: "sekar_duku", name: "Sekar Duku", description: "Bentuk bunga duku dilihat dari atas" },
-  { id: "sekar_jagung", name: "Sekar Jagung", description: "Bunga jagung yang dalam bahasa Jawa disebut sinuwun" },
-  { id: "jayakirana", name: "Jayakirana", description: "Senapati Raja Angling Dharma dari kerajaan Malwapati" },
-  { id: "mawur", name: "Mawur", description: "Sesuatu yang tersebar berserakan atau tidak menjadi satu" },
-  { id: "sekar_tanjung", name: "Sekar Tanjung", description: "Tanaman peneduh yang menghasilkan bunga berbau harum" },
-  { id: "sekar_keben", name: "Sekar Keben", description: "Pohon yang dapat tumbuh baik di daerah pantai" },
-  {
-    id: "sekar_srengenge",
-    name: "Sekar Srengenge",
-    description: "Bunga matahari yang selalu menghadap ke arah matahari",
-  },
-  { id: "sekar_soka", name: "Sekar Soka", description: "Tanaman dengan bunga majemuk serumpun berbagai warna" },
-  { id: "sekar_nangka", name: "Sekar Nangka", description: "Bunga nangka atau angkup dalam bahasa Jawa" },
-  {
-    id: "kawung_nitik",
-    name: "Kawung Nitik",
-    description: "Empat lingkaran yang saling bersinggungan dengan mlinjon di tengahnya",
-  },
-  { id: "sekar_kentang", name: "Sekar Kentang", description: "Bentuk bunga kentang sebagai ide motif" },
-  { id: "sekar_pudak", name: "Sekar Pudak", description: "Tanaman pandan berduri dengan bunga putih beraroma harum" },
-  { id: "sekar_dlima", name: "Sekar Dlima", description: "Bentuk bunga delima" },
-  { id: "karawitan", name: "Karawitan", description: "Bunga karawitan dan orkestra musik Jawa" },
-  { id: "cinde_wilis", name: "Cinde Wilis", description: "Kain sutra hijau bergambar bunga" },
-  { id: "sekar_mlati", name: "Sekar Mlati", description: "Bunga melati simbol kesucian" },
-  { id: "kuncup_kanthil", name: "Kuncup Kanthil", description: "Bunga kanthil putih yang harum" },
-  { id: "sekar_dangan", name: "Sekar Dangan", description: "Dangan berarti sembuh dalam bahasa Jawa halus" },
-  { id: "sekar_sawo", name: "Sekar Sawo", description: "Bunga tanaman sawo yang disebut rikuh" },
-  { id: "manggar", name: "Manggar", description: "Kelopak bunga kelapa berbentuk rangkaian memanjang" },
-  { id: "sekar_cengkeh", name: "Sekar Cengkeh", description: "Bunga cengkeh yang disebut polong" },
-  { id: "sritaman", name: "Sritaman", description: "Taman dalam istana para raja" },
-  { id: "sekar_mundu", name: "Sekar Mundu", description: "Bunga tanaman mundhu" },
-  { id: "sekar_andong", name: "Sekar Andong", description: "Bunga tanaman andong dengan daun merah" },
-  { id: "gedhangan", name: "Gedhangan", description: "Wujud tabung untuk menyimpan benda penting" },
-  { id: "sekar_pala", name: "Sekar Pala", description: "Bunga tanaman pala dengan biji harum" },
-  { id: "klampok_arum", name: "Klampok Arum", description: "Varietas jambu yang manis dan harum" },
-  { id: "sekar_jali", name: "Sekar Jali", description: "Bunga tanaman jali dari rumput-rumputan" },
-  { id: "sekar_lintang", name: "Sekar Lintang", description: "Lintang berarti bintang, bunganya adalah sinar" },
-  { id: "sekar_kenanga", name: "Sekar Kenanga", description: "Bunga kenanga untuk upacara ritual" },
-  { id: "sekar_jeruk", name: "Sekar Jeruk", description: "Bunga jeruk yang disebut alon (pelan)" },
-  { id: "sekar_mindi", name: "Sekar Mindi", description: "Bunga pohon mindi yang kayunya bermanfaat" },
-  { id: "tanjung_gunung", name: "Tanjung Gunung", description: "Tanaman dengan bunga harum dan tajuk peneduh" },
-  { id: "sekar_kenikir", name: "Sekar Kenikir", description: "Bunga kenikir untuk kesehatan" },
-  { id: "sekar_blimbing", name: "Sekar Blimbing", description: "Bunga tanaman belimbing" },
-  { id: "sekar_pijetan", name: "Sekar Pijetan", description: "Buah pijetan yang asam manis menyegarkan" },
-  { id: "sarimulat", name: "Sarimulat", description: "Sari adalah inti, mulat berarti mawas diri" },
-  { id: "sekar_mrica", name: "Sekar Mrica", description: "Merica yang pedas namun membangkitkan selera" },
-  { id: "sekar_kepel", name: "Sekar Kepel", description: "Tanaman kepel dengan buah menempel di batang" },
-  { id: "truntum_kurung", name: "Truntum Kurung", description: "Tumaruntum berarti menurun ke generasi berikutnya" },
-  { id: "jayakusuma", name: "Jayakusuma", description: "Anak Arjuna yang taat dan pahlawan muda" },
-  { id: "rengganis", name: "Rengganis", description: "Tokoh perempuan cantik dalam cerita Menak" },
-  { id: "sekar_gambir", name: "Sekar Gambir", description: "Bunga putih bersih sangat harum, kuncup ungu kemerahan" },
-]
+interface Pattern {
+  id: string
+  name: string
+  filename: string
+  image_url?: string
+  description?: string
+}
+
+interface ChatMessage {
+  text: string
+  isUser: boolean
+}
 
 export default function PatternsPage() {
   const [selectedPattern, setSelectedPattern] = useState<string | null>(null)
@@ -98,9 +27,42 @@ export default function PatternsPage() {
   const [resultImage, setResultImage] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [showChatbot, setShowChatbot] = useState(false)
-  const [chatMessages, setChatMessages] = useState<Array<{ text: string; isUser: boolean }>>([])
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
   const [chatInput, setChatInput] = useState("")
+  const [isChatLoading, setIsChatLoading] = useState(false)
+  const [statusMessage, setStatusMessage] = useState<{ text: string; type: "success" | "error" | "loading" }>()
+  const [batikPatterns, setBatikPatterns] = useState<Pattern[]>([])
+  const [isLoadingPatterns, setIsLoadingPatterns] = useState(true)
+
   const router = useRouter()
+
+  // API Configuration
+  const API_URL = "http://127.0.0.1:5000"
+
+  // Fetch patterns from backend API
+  const fetchPatterns = async () => {
+    try {
+      setIsLoadingPatterns(true)
+      const response = await fetch(`${API_URL}/get_batik_patterns`)
+      if (response.ok) {
+        const data = await response.json()
+        const patternsWithImageUrls = data.patterns.map((pattern: Pattern) => ({
+          ...pattern,
+          image_url: `${API_URL}/patterns/${pattern.id}/${pattern.filename}`,
+          description: `Motif ${pattern.name} - salah satu motif tradisional Batik Nitik yang kaya akan makna filosofis`
+        }))
+        setBatikPatterns(patternsWithImageUrls)
+      } else {
+        console.error('Failed to fetch patterns:', response.status)
+        showStatus("Gagal memuat daftar motif batik", "error")
+      }
+    } catch (error) {
+      console.error('Error fetching patterns:', error)
+      showStatus("Gagal memuat daftar motif batik", "error")
+    } finally {
+      setIsLoadingPatterns(false)
+    }
+  }
 
   useEffect(() => {
     // Get captured image from sessionStorage
@@ -112,10 +74,13 @@ export default function PatternsPage() {
       router.push("/camera")
     }
 
-    // Initialize chatbot
+    // Fetch patterns from backend
+    fetchPatterns()
+
+    // Initialize chatbot with welcome message
     setChatMessages([
       {
-        text: "Selamat datang! Saya siap membantu Anda belajar tentang 60 motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau pilih motif dari galeri.",
+        text: "Selamat datang! Saya siap membantu Anda belajar tentang motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau pilih motif dari galeri.",
         isUser: false,
       },
     ])
@@ -124,13 +89,14 @@ export default function PatternsPage() {
   const filteredPatterns = batikPatterns.filter(
     (pattern) =>
       pattern.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pattern.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      pattern.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   const selectPattern = (patternId: string) => {
     setSelectedPattern(patternId)
-    const pattern = batikPatterns.find((p) => p.id === patternId)
+    const pattern = batikPatterns.find((p: Pattern) => p.id === patternId)
     if (pattern) {
+      showStatus(`Selected: ${pattern.name}`, "success")
       // Add chatbot message about selected pattern
       setChatMessages((prev) => [
         ...prev,
@@ -139,72 +105,203 @@ export default function PatternsPage() {
     }
   }
 
+  const showStatus = (message: string, type: "success" | "error" | "loading") => {
+    setStatusMessage({ text: message, type })
+    if (type !== "loading") {
+      setTimeout(() => setStatusMessage(undefined), 3000)
+    }
+  }
+
   const applyBatik = async () => {
     if (!selectedPattern || !capturedImage) {
-      alert("Silakan pilih motif dan pastikan foto telah diambil")
+      showStatus("Silakan pilih motif dan pastikan foto telah diambil", "error")
       return
     }
 
     setIsProcessing(true)
+    showStatus("Menerapkan motif batik menggunakan IDM-VTON AI (wajib)...", "loading")
 
-    // Simulate AI processing (replace with actual API call)
-    setTimeout(() => {
-      // For demo, we'll just overlay the captured image with a pattern effect
-      setResultImage(capturedImage) // In real app, this would be the AI-processed result
+    try {
+      let imageData = capturedImage
+      if (imageData.startsWith("data:image/")) {
+        imageData = imageData.split(",")[1]
+      }
+
+      if (!imageData || imageData.length < 100) {
+        throw new Error("Invalid image data")
+      }
+
+      const response = await fetch(`${API_URL}/virtual_fitting`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          user_image: imageData,
+          pattern_id: selectedPattern,
+          force_idm_vton: true  // Force IDM-VTON usage
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setResultImage(data.result_image)
+        
+        showStatus(`✅ Motif batik berhasil diterapkan dengan IDM-VTON!`, "success")
+        console.log("IDM-VTON success:", data.method_used)
+      } else {
+        const errorData = await response.json()
+        
+        if (response.status === 500 && errorData.no_fallback) {
+          throw new Error(`IDM-VTON REQUIRED: ${errorData.solution || errorData.error}`)
+        } else if (response.status === 401) {
+          throw new Error("Token Hugging Face tidak valid. Mohon periksa konfigurasi HUGGING_FACE_TOKEN.")
+        } else if (response.status === 503) {
+          throw new Error("IDM-VTON API sementara tidak tersedia. Silakan coba lagi dalam beberapa menit.")
+        } else {
+          throw new Error(errorData.error || "IDM-VTON processing failed")
+        }
+      }
+    } catch (err: any) {
+      console.error("IDM-VTON error:", err)
+      showStatus(`❌ ${err.message}`, "error")
+    } finally {
       setIsProcessing(false)
-    }, 3000)
+    }
   }
 
-  const saveImage = () => {
-    if (!resultImage) return
+  const saveImage = async () => {
+    if (!resultImage) {
+      showStatus("No result to save", "error")
+      return
+    }
 
-    // Create download link
-    const link = document.createElement("a")
-    link.href = resultImage
-    link.download = `batik-${selectedPattern}-${Date.now()}.jpg`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      const response = await fetch(`${API_URL}/save_photo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          image: resultImage.split(",")[1],
+          pattern_id: selectedPattern,
+        }),
+      })
 
-    alert("Foto berhasil disimpan!")
+      const data = await response.json()
+
+      if (response.ok) {
+        showStatus("Photo saved successfully", "success")
+      } else {
+        showStatus("Error saving photo: " + data.error, "error")
+      }
+    } catch (err: any) {
+      showStatus("Error saving photo: " + err.message, "error")
+    }
   }
 
-  const sendChatMessage = () => {
-    if (!chatInput.trim()) return
+  const sendChatMessage = async () => {
+    if (!chatInput.trim() || isChatLoading) return
 
     const userMessage = chatInput.trim()
     setChatMessages((prev) => [...prev, { text: userMessage, isUser: true }])
     setChatInput("")
+    setIsChatLoading(true)
 
-    // Generate response
-    setTimeout(() => {
-      const response = generateChatResponse(userMessage)
+    try {
+      // Call backend chatbot API
+      const response = await fetch(`${API_URL}/chatbot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: userMessage,
+          pattern_id: selectedPattern,
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setChatMessages((prev) => [...prev, { text: data.response, isUser: false }])
+      } else {
+        throw new Error("API not available")
+      }
+    } catch (err) {
+      console.error("Chatbot error:", err)
+      // Fallback to local response generation
+      const response = generateFallbackResponse(userMessage)
       setChatMessages((prev) => [...prev, { text: response, isUser: false }])
-    }, 1000)
+    } finally {
+      setIsChatLoading(false)
+    }
   }
 
-  const generateChatResponse = (message: string) => {
+  const generateFallbackResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase()
 
     // Check if asking about specific pattern
     const pattern = batikPatterns.find(
-      (p) => lowerMessage.includes(p.name.toLowerCase()) || lowerMessage.includes(p.id.replace(/_/g, " ")),
+      (p: Pattern) =>
+        lowerMessage.includes(p.name.toLowerCase()) ||
+        lowerMessage.includes(p.id.toLowerCase()) ||
+        lowerMessage.includes(p.name.toLowerCase().replace(" ", "")),
     )
 
     if (pattern) {
-      return `${pattern.name}: ${pattern.description}`
+      return `${pattern.name}: ${
+        pattern.description || "Motif batik tradisional dengan makna filosofis mendalam."
+      }`
     }
 
-    // General responses
+    // Check if query is batik-related
+    const batikKeywords = [
+      "batik",
+      "nitik",
+      "motif",
+      "sekar",
+      "pattern",
+      "tradisional",
+      "yogyakarta",
+      "jawa",
+      "filosofi",
+      "makna",
+    ]
+    const isBatikRelated = batikKeywords.some((keyword) => lowerMessage.includes(keyword))
+
+    if (!isBatikRelated && !lowerMessage.includes("halo") && !lowerMessage.includes("hai")) {
+      return "Maaf, saya adalah asisten khusus untuk Batik Nitik dari Yogyakarta. Saya hanya dapat membantu menjawab pertanyaan tentang motif-motif Batik Nitik dan aspek terkaitnya."
+    }
+
+    // Enhanced responses based on keywords
+    if (lowerMessage.includes("makna") || lowerMessage.includes("filosofi")) {
+      if (selectedPattern) {
+        const selectedMotif = batikPatterns.find((p: Pattern) => p.id === selectedPattern)
+        if (selectedMotif) {
+          return `Makna filosofis motif ${selectedMotif.name}: ${selectedMotif.description}`
+        }
+      }
+      return "Setiap motif Batik Nitik memiliki makna filosofis yang mendalam. Pilih motif tertentu dari galeri untuk mengetahui maknanya lebih detail."
+    }
+
+    if (lowerMessage.includes("sejarah") || lowerMessage.includes("asal usul")) {
+      return "Batik Nitik adalah batik klasik dari Yogyakarta dengan teknik yang sangat teliti. Nama 'nitik' berasal dari kata 'titik' yang menggambarkan motif-motif kecil dan detail."
+    }
+
+    if (lowerMessage.includes("berapa") || lowerMessage.includes("jumlah")) {
+      return `Batik Nitik memiliki berbagai motif tradisional. Dalam galeri ini tersedia ${batikPatterns.length} motif dengan informasi lengkap.`
+    }
+
     if (lowerMessage.includes("motif") || lowerMessage.includes("pattern")) {
-      return "Batik Nitik memiliki 60 motif tradisional. Beberapa yang populer adalah Sekar Kemuning, Ceplok Liring, Cakar Ayam, dan Kawung Nitik. Setiap motif memiliki makna filosofis yang mendalam."
+      return "Batik Nitik memiliki berbagai motif tradisional. Beberapa yang populer adalah Sekar Kemuning, Kawung Nitik, Cakar Ayam, dan lainnya. Setiap motif memiliki makna filosofis yang mendalam."
     }
 
     if (lowerMessage.includes("batik")) {
-      return "Batik Nitik adalah batik klasik dari Yogyakarta dengan 60 motif tradisional. Setiap motif memiliki makna filosofis yang mencerminkan kebijaksanaan masyarakat Jawa."
+      return "Batik Nitik adalah batik klasik dari Yogyakarta dengan berbagai motif tradisional. Setiap motif memiliki makna filosofis yang mencerminkan kebijaksanaan masyarakat Jawa."
     }
 
-    return "Maaf, saya membantu menjelaskan tentang motif-motif Batik Nitik. Silakan tanyakan tentang motif tertentu atau ketik nama motif yang ingin Anda ketahui."
+    if (lowerMessage.includes("halo") || lowerMessage.includes("hai")) {
+      return `Halo! Saya adalah asisten khusus Batik Nitik. Saya dapat membantu Anda mempelajari ${batikPatterns.length} motif Batik Nitik yang tersedia.`
+    }
+
+    return `Silakan tanyakan tentang motif-motif Batik Nitik yang tersedia. Anda dapat bertanya tentang makna filosofis, deskripsi, atau karakteristik visual dari ${batikPatterns.length} motif yang terdokumentasi.`
   }
 
   const goBack = () => {
@@ -268,7 +365,27 @@ export default function PatternsPage() {
                 {selectedPattern && (
                   <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                     <p className="text-sm font-medium text-amber-800">Motif Terpilih:</p>
-                    <p className="text-amber-700">{batikPatterns.find((p) => p.id === selectedPattern)?.name}</p>
+                    <p className="text-amber-700">{batikPatterns.find((p: Pattern) => p.id === selectedPattern)?.name}</p>
+                  </div>
+                )}
+
+                {/* Status Message */}
+                {statusMessage && (
+                  <div
+                    className={`p-3 rounded-lg text-sm ${
+                      statusMessage.type === "success"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : statusMessage.type === "error"
+                        ? "bg-red-50 text-red-700 border border-red-200"
+                        : "bg-blue-50 text-blue-700 border border-blue-200"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      {statusMessage.type === "loading" && (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                      )}
+                      {statusMessage.text}
+                    </div>
                   </div>
                 )}
 
@@ -310,7 +427,9 @@ export default function PatternsPage() {
           <div className="lg:col-span-2">
             <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-amber-800">60 Motif Batik Nitik Tradisional</CardTitle>
+                <CardTitle className="text-amber-800">
+                  {isLoadingPatterns ? "Memuat Motif Batik..." : `${batikPatterns.length} Motif Batik Nitik Tradisional`}
+                </CardTitle>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-amber-500 w-4 h-4" />
                   <Input
@@ -323,42 +442,62 @@ export default function PatternsPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
-                  {filteredPatterns.map((pattern, index) => {
-                    const colors = ["#8B4513", "#D2691E", "#CD853F", "#DEB887", "#F4A460", "#DAA520"]
-                    const bgColor = colors[index % colors.length]
-                    const isSelected = selectedPattern === pattern.id
+                {isLoadingPatterns ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+                    <span className="ml-2 text-amber-700">Memuat motif batik...</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                    {filteredPatterns.map((pattern: Pattern, index: number) => {
+                      const colors = ["#8B4513", "#D2691E", "#CD853F", "#DEB887", "#F4A460", "#DAA520"]
+                      const bgColor = colors[index % colors.length]
+                      const isSelected = selectedPattern === pattern.id
 
-                    return (
-                      <div
-                        key={pattern.id}
-                        onClick={() => selectPattern(pattern.id)}
-                        className={`cursor-pointer border-2 rounded-lg p-2 transition-all hover:shadow-md ${
-                          isSelected
-                            ? "border-amber-500 bg-amber-50 shadow-md"
-                            : "border-amber-200 hover:border-amber-400"
-                        }`}
-                        title={pattern.description}
-                      >
+                      return (
                         <div
-                          className="w-full h-20 rounded-md flex items-center justify-center text-white text-xs text-center p-2 mb-2"
-                          style={{
-                            background: `linear-gradient(45deg, ${bgColor}, ${colors[(index + 1) % colors.length]})`,
-                          }}
+                          key={pattern.id}
+                          onClick={() => selectPattern(pattern.id)}
+                          className={`cursor-pointer border-2 rounded-lg p-2 transition-all hover:shadow-md ${
+                            isSelected
+                              ? "border-amber-500 bg-amber-50 shadow-md"
+                              : "border-amber-200 hover:border-amber-400"
+                          }`}
+                          title={pattern.name}
                         >
-                          {pattern.name}
+                          {pattern.image_url ? (
+                            <img
+                              src={pattern.image_url}
+                              alt={pattern.name}
+                              className="w-full h-20 object-cover rounded-md mb-2"
+                              onError={(e) => {
+                                // Fallback to gradient if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                          ) : null}
+                          <div
+                            className={`w-full h-20 rounded-md flex items-center justify-center text-white text-xs text-center p-2 mb-2 ${pattern.image_url ? 'hidden' : ''}`}
+                            style={{
+                              background: `linear-gradient(45deg, ${bgColor}, ${colors[(index + 1) % colors.length]})`,
+                            }}
+                          >
+                            {pattern.name}
+                          </div>
+                          <p className="text-xs text-amber-800 font-medium text-center">{pattern.name}</p>
                         </div>
-                        <p className="text-xs text-amber-800 font-medium text-center">{pattern.name}</p>
-                      </div>
-                    )
-                  })}
-                </div>
+                      )
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Chatbot Modal */}
+        {/* Enhanced Chatbot Modal */}
         {showChatbot && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <Card className="w-full max-w-md h-96 bg-white shadow-2xl">
@@ -384,6 +523,14 @@ export default function PatternsPage() {
                       {msg.text}
                     </div>
                   ))}
+                  {isChatLoading && (
+                    <div className="bg-white text-amber-800 mr-8 border border-amber-200 p-2 rounded-lg text-sm">
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600 mr-2"></div>
+                        Mengetik...
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex space-x-2">
                   <Input
@@ -392,8 +539,13 @@ export default function PatternsPage() {
                     onKeyPress={(e) => e.key === "Enter" && sendChatMessage()}
                     placeholder="Tanya tentang batik..."
                     className="border-amber-200 focus:border-amber-500"
+                    disabled={isChatLoading}
                   />
-                  <Button onClick={sendChatMessage} className="bg-amber-600 hover:bg-amber-700">
+                  <Button
+                    onClick={sendChatMessage}
+                    className="bg-amber-600 hover:bg-amber-700"
+                    disabled={isChatLoading}
+                  >
                     Kirim
                   </Button>
                 </div>

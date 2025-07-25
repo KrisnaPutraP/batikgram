@@ -66,6 +66,8 @@ export default function CameraPage() {
   const retakePhoto = () => {
     setCapturedImage(null)
     sessionStorage.removeItem("capturedImage")
+    // Restart the camera
+    startCamera()
   }
 
   const proceedToPatterns = () => {
